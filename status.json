@@ -1,14 +1,14 @@
 [
-	{ name: "songs with %u users", type: "LISTENING" },
-	{ name: "songs in %g guilds",  type: "LISTENING" },
-	{ name: "songs for %u users",  type: "PLAYING" },
-	{ name: "songs in %g guilds",  type: "PLAYING" },
-	{ name: "songs for %u users",  type: "STREAMING" },
-	{ name: "songs in %g guilds",  type: "STREAMING" },
-	{ name: "/-commands",     type: "LISTENING" },
-	{ name: "getting coded!", type: "PLAYING" },
-	{ name: "song guessing",  type: "PLAYING" },
-	{ name: "%s songs",       type: "PLAYING" },
-	{ name: "to %s songs",    type: "PLAYING" },
-	{ name: "for guesses",    type: "WATCHING"}
+	{ "name": "songs with %u users", "type": "LISTENING" },
+	{ "name": "songs in %g guilds",  "type": "LISTENING" },
+	{ "name": "songs for %u users",  "type": "PLAYING" },
+	{ "name": "songs in %g guilds",  "type": "PLAYING" },
+	{ "name": "songs for %u users",  "type": "STREAMING" },
+	{ "name": "songs in %g guilds",  "type": "STREAMING" },
+	{ "name": "/-commands",     "type": "LISTENING" },
+	{ "name": "getting coded!", "type": "PLAYING" },
+	{ "name": "song guessing",  "type": "PLAYING" },
+	{ "name": "%s songs",       "type": "PLAYING" },
+	{ "name": "to %s songs",    "type": "LISTENING" },
+	{ "name": "for guesses",    "type": "WATCHING"}
 ]

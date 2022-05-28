@@ -1,30 +1,5 @@
 import { bot } from "./main.js"
-
-const activities = [{
-	name: "songs with %u users", type: "LISTENING"
-}, {
-	name: "songs in %g guilds", type: "LISTENING"
-}, {
-	name: "songs for %u users", type: "PLAYING"
-}, {
-	name: "songs in %g guilds", type: "PLAYING"
-}, {
-	name: "songs for %u users", type: "STREAMING"
-}, {
-	name: "songs in %g guilds", type: "STREAMING"
-}, {
-	name: "/-commands", type: "LISTENING"
-}, {
-	name: "getting coded!", type: "PLAYING"
-}, {
-	name: "song guessing", type: "PLAYING"
-}, {
-	name: "%s songs", type: "PLAYING"
-}, {
-	name: "to %s songs", type: "PLAYING"
-}, {
-	name: "for guesses", type: "WATCHING"
-}]
+import activities from "./status.json" assert {type: "json"}
 
 export default function run() {
 	setInterval(updatePresence, 11000)
