@@ -3,7 +3,6 @@ import Logger from "./logger.js"
 import { bot } from "./main.js"
 
 const logger = new Logger("Game")
-export const games = {};
 
 export default class Game {
 

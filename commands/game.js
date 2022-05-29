@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { lyrics } from "../lyrics.js";
-import Game, { games } from "../game.js"
+import { lyrics, games } from "../lyrics.js";
+import Game from "../game.js"
 
 export default {
 	name: "game",
