@@ -4,8 +4,9 @@ import { COLOR } from "./logger.js"
 import Game from "./game.js"
 
 const logger = new Logger("Lyrics", COLOR.LIGHT_BLUE)
-const lyrics = []
-const games  = []
+
+export const lyrics = []
+export const games  = {}
 
 let bot
 
@@ -33,16 +34,6 @@ export default class LyricsMan {
 			}
 		}, 100)
 
-	}
-
-	async debug() {
-		let g = await bot.guilds.fetch("859422707229917204")
-		let c = await g.channels.fetch("980116350737457172")
-		let i = Math.floor(Math.random() * lyrics.length)
-		logger.debug(c)
-		let game = new Game(lyrics[i], await bot.channels.fetch("980116350737457172"), undefined)
-		game.start()
-		games.push(game)
 	}
 
 }

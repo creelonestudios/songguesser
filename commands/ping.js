@@ -4,7 +4,7 @@ export default {
 	category: "basic",
 	hide: false,
 	guildOnly: false,
-	run: async (bot, interaction, lang) => {
+	run: async (bot, interaction) => {
 		interaction.reply({ embeds: [{
 			title: "**I am responsive!**",
 			description: `:ping_pong: Pong! (${bot.ws.ping}ms)`,
