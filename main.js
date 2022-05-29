@@ -9,12 +9,13 @@ import { COLOR } from "./logger.js"
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
 export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
 
-new LyricsMan().debug()
-
 bot.on("ready", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);
 
 	statusmgr()
+
+	let lyricsman = new LyricsMan(bot)
+	lyricsman.debug()
 
 	await load(bot);
 	register(bot);
