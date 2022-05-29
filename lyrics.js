@@ -2,14 +2,37 @@ import fs from "fs/promises"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
-import { bot } from "./main.js"
 
 const logger = new Logger("Lyrics", COLOR.LIGHT_BLUE)
+
 export const lyrics = []
+export const games  = []
+
+let bot
 
 export default class LyricsMan {
 
-	constructor() {
+	constructor(_bot) {
+		bot = _bot
+
+		bot.on("messageCreate", msg => {
+			if(msg.author.bot) return
+			let c = msg.channel
+			for(let g of games) {
+				if(g.running && g.channel.id == c.id) {
+					g.guess(msg)
+					break // there can only be one game be in each channel anyways
+				}
+			}
+		})
+
+		setInterval(() => {
+			for(let g of games) {
+				if(g.running) {
+					g.sendLyrics()
+				}
+			}
+		}, 100)
 
 	}
 
@@ -18,7 +41,9 @@ export default class LyricsMan {
 		let c = await g.channels.fetch("980116350737457172")
 		let i = Math.floor(Math.random() * lyrics.length)
 		logger.debug(c)
-		new Game(lyrics[i], await bot.channels.fetch("980116350737457172"), undefined).start()
+		let game = new Game(lyrics[i], await bot.channels.fetch("980116350737457172"), undefined)
+		game.start()
+		games.push(game)
 	}
 
 }
@@ -27,9 +52,9 @@ class Lyrics {
 
 	constructor(data) {
 
-		this.author = "Unknown"
-		this.title = "Unknown"
-		this.release = "Unknown"
+		this.author = undefined
+		this.title = undefined
+		this.release = undefined
 		this.url = ""
 		this.credit = []
 		this.options = {}
@@ -84,6 +109,10 @@ class Lyrics {
 
 		}
 
+		if(!this.author || !this.title || !this.release) {
+			throw new LyricsFormatError(`missing meta tags: author, title and release are required`) + ""
+		}
+
 	}
 
 	opt(k) {
@@ -101,6 +130,21 @@ class LyricsSyntaxError {
 
 	toString() {
 		let s = `LyricsSyntaxError in line ${this.line}: ${this.reason}`
+		if(this.cause) {
+			s += "\nCaused by " + this.cause
+		}
+		return s
+	}
+}
+
+class LyricsFormatError {
+	constructor(reason, cause) {
+		this.reason = reason
+		this.cause  = cause
+	}
+
+	toString() {
+		let s = `LyricsFormatError: ${this.reason}`
 		if(this.cause) {
 			s += "\nCaused by " + this.cause
 		}
