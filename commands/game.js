@@ -83,7 +83,7 @@ export default {
 				}]})
 				return;
 			}
-			game.sendStatus()
+			game.sendStatus(interaction)
 		}
 	}
 }
