@@ -74,11 +74,6 @@ export default {
 				return;
 			}
 			game.stop("ended")
-			interaction.reply({ embeds: [{
-				title: "**Game stopped!**",
-				description: `It was ${game.lyrics.title} - ${game.lyrics.author}`,
-				color: [0, 230, 0]
-			}]})
 		} else if(sub === "info") {
 			const game = games[interaction.channel.id]
 			if(!game) {
@@ -89,11 +84,7 @@ export default {
 				}]})
 				return;
 			}
-			interaction.reply({ embeds: [{
-				title: "**Game info**",
-				description: `??? - ???`,
-				color: [0, 230, 0]
-			}]})
+			game.sendStatus()
 		}
 	}
 }
