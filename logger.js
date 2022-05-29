@@ -22,7 +22,7 @@ export default class Logger {
 	}
 
 	debug(...args) {
-		console.debug(`${esc}[m[${esc}[${this.color}m${this.feature}${esc}[m]${esc}[36m`, ...args, `${esc}[m`)
+		if(process.argv.includes("debug")) console.debug(`${esc}[m[${esc}[${this.color}m${this.feature}${esc}[m]${esc}[36m`, ...args, `${esc}[m`)
 	}
 
 	trace(...args) {
