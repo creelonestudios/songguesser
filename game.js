@@ -97,15 +97,19 @@ export default class Game {
 		} else if(guess) this.sendStatus()
 	}
 
-	sendStatus() {
+	sendStatus(interaction) {
 		let s = `${this.guesser.author ? this.lyrics.author : "???"} - ${this.guesser.title ? this.lyrics.title : "???"}`
 		if(this.guesser.author) s += `\nAuthor guessed by <@${this.guesser.author}>`
 		if(this.guesser.title) s += `\nTitle guessed by <@${this.guesser.title}>`
-		this.channel.send({embeds: [{
+
+		let msgopt = {embeds: [{
 			title: "GUESS SONG",
 			description: s,
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]})
+
+		if(interaction) interaction.reply(msgopt)
+		else this.channel.send(msgopt)
 	}
 
 	sendEndStatus(reason) {

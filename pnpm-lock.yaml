@@ -4,11 +4,13 @@ specifiers:
   '@discordjs/rest': ^0.4.1
   discord-api-types: ^0.33.0
   discord.js: ^13.7.0
+  ytdl-core: ^4.11.0
 
 dependencies:
   '@discordjs/rest': 0.4.1
   discord-api-types: 0.33.0
   discord.js: 13.7.0
+  ytdl-core: 4.11.0
 
 packages:
 
@@ -160,6 +162,14 @@ packages:
       mime-types: 2.1.35
     dev: false
 
+  /m3u8stream/0.8.6:
+    resolution: {integrity: sha512-LZj8kIVf9KCphiHmH7sbFQTVe4tOemb202fWwvJwR9W5ENW/1hxJN6ksAWGhQgSBSa3jyWhnjKU1Fw1GaOdbyA==}
+    engines: {node: '>=12'}
+    dependencies:
+      miniget: 4.2.2
+      sax: 1.2.4
+    dev: false
+
   /mime-db/1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -172,6 +182,11 @@ packages:
       mime-db: 1.52.0
     dev: false
 
+  /miniget/4.2.2:
+    resolution: {integrity: sha512-a7voNL1N5lDMxvTMExOkg+Fq89jM2vY8pAi9ZEWzZtfNmdfP6RXkvUtFnCAXoCv2T9k1v/fUJVaAEuepGcvLYA==}
+    engines: {node: '>=12'}
+    dev: false
+
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -182,6 +197,10 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
+
+  /sax/1.2.4:
+    resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
     dev: false
 
   /tr46/0.0.3:
@@ -218,4 +237,13 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /ytdl-core/4.11.0:
+    resolution: {integrity: sha512-Q3hCLiUA9AOGQXzPvno14GN+HgF9wsO1ZBHlj0COTcyxjIyFpWvMfii0UC4/cAbVaIjEdbWB71GdcGuc4J1Lmw==}
+    engines: {node: '>=12'}
+    dependencies:
+      m3u8stream: 0.8.6
+      miniget: 4.2.2
+      sax: 1.2.4
     dev: false
