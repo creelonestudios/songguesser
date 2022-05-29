@@ -1,6 +1,7 @@
 import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { bot } from "./main.js"
+import points from "./points.js"
 
 const logger = new Logger("Game")
 
@@ -43,6 +44,35 @@ export default class Game {
 		this.running = false
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason)
+
+		if(reason != "stopped") {
+			let s = []
+			if(this.guesser.title != this.guesser.author) {
+				if(this.guesser.title) {
+					points.addPoints(this.guesser.title, this.channel.guild.id, 1)
+					let u = bot.users.cache.get(this.guesser.title)
+					s.push(u.username + " gained 1 point.")
+				}
+				if(this.guesser.author) {
+					points.addPoints(this.guesser.author, this.channel.guild.id, 1)
+					let u = bot.users.cache.get(this.guesser.author)
+					s.push(u.username + " gained 1 point.")
+				}
+			} else if(this.guesser.title) {
+				points.addPoints(this.guesser.title, this.channel.guild.id, 3)
+				let u = bot.users.cache.get(this.guesser.title)
+				s.push(u.username + " gained 3 points.")
+			}
+
+			if(s.length > 0) {
+				this.channel.send({embeds: [{
+					title: "Points",
+					description: s.join("\n"),
+					footer: {text: "SongGuesser vTODO: insert version here"}, // TODO
+					color: "#00ff00"
+				}]})
+			}
+		}
 	}
 
 	guess(msg) {
@@ -74,7 +104,7 @@ export default class Game {
 		this.channel.send({embeds: [{
 			title: "GUESS SONG",
 			description: s,
-			footer: "SongGuesser vTODO: insert version here" // TODO
+			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]})
 	}
 
@@ -90,7 +120,7 @@ export default class Game {
 		this.channel.send({embeds: [{
 			title: reasonTexts[reason] || "Song ended",
 			description: `Winners:` + (s || "no one"),
-			footer: "SongGuesser vTODO: insert version here" // TODO
+			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]})
 	}
 
