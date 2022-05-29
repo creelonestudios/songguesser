@@ -2,6 +2,7 @@ import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 
 const logger = new Logger("Game")
+export const games = {};
 
 export default class Game {
 
@@ -13,15 +14,15 @@ export default class Game {
 		this.i       = 0
 		this.loop    = undefined
 		this.t       = -1
-		logger.debug(this)
+		// logger.debug(this)
 	}
 
 	start() {
 		this.running = true
 		let game = this
+		this.t = Date.now()
 		this.loop = setInterval(() => game.sendLyrics(), 100)
 		logger.log(`Started a game in #${this.channel.name}`)
-		this.t = Date.now()
 	}
 
 	sendLyrics() {

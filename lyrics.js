@@ -5,7 +5,7 @@ import Game from "./game.js"
 import { bot } from "./main.js"
 
 const logger = new Logger("Lyrics", COLOR.LIGHT_BLUE)
-const lyrics = []
+export const lyrics = []
 
 export default class LyricsMan {
 
