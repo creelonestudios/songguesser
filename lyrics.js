@@ -63,7 +63,7 @@ class Lyrics {
 
 			let words = line.split(" ")
 			let timestamp = this.options.timestamps == "auto" ? i * (parseFloat(this.options.delay) || 4000) : parseInt(words[0]) * 1000
-			if(this.options.timestamps) words.shift()
+			if(this.options.timestamps != "auto") words.shift()
 			line = words.join(" ")
 
 			if(!isNaN(timestamp) && timestamp >= 0) {
