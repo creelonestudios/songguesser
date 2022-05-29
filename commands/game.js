@@ -55,7 +55,6 @@ export default {
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
 			let i = Math.floor(Math.random() * lyrics.length)
-			console.log(lyrics[i]);
 			const game = new Game(lyrics[i], interaction.channel, undefined)
 			game.start();
 			games[interaction.channel.id] = game

@@ -14,9 +14,6 @@ bot.on("ready", async () => {
 
 	statusmgr()
 
-	let lyricsman = new LyricsMan(bot)
-	lyricsman.debug()
-
 	await load(bot);
 	register(bot);
 
