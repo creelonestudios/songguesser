@@ -42,7 +42,7 @@ export default {
 		const sub = interaction.options.getSubcommand();
 		if(sub === "list") {
 			const embed = new MessageEmbed();
-			embed.setTitle("Songs");
+			embed.setTitle("Songs (" + lyrics.length + ")");
 			embed.setFooter("SongGuesser");
 			embed.setColor([0, 230, 0]);
 			embed.addFields(lyrics.map(l => {
