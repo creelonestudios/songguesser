@@ -12,12 +12,12 @@ export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOI
 new LyricsMan().debug()
 
 bot.on("ready", async () => {
-  logger.log(`Logged in as ${bot.user.tag}!`);
+	logger.log(`Logged in as ${bot.user.tag}!`);
 
 	statusmgr()
 
-  await load(bot);
-  register(bot);
+	await load(bot);
+	register(bot);
 
 	/*bot.users.fetch("418109742183874560").then(u => {
 		console.log(u)
@@ -26,7 +26,7 @@ bot.on("ready", async () => {
 })
 
 bot.on("messageCreate", (msg) => {
-  // TODO: handle guesses
+	// TODO: handle guesses
 	logger.log(msg.author.tag, msg.content)
 	if(msg.author.id == bot.user.id) return
 	if(msg.partial) return msg.fetch().then(handleMessage)
