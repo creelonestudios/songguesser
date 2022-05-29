@@ -1,10 +1,14 @@
 import { bot } from "./main.js"
 import activities from "./status.json" assert {type: "json"}
+import Logger from "./logger.js"
+import { COLOR } from "./logger.js"
+
+const logger = new Logger("StatusMgr", COLOR.LIGHT_YELLOW)
 
 export default function run() {
 	setInterval(updatePresence, 11000)
 	updatePresence()
-	console.log("[StatusMgr] running!")
+	logger.log("running!")
 }
 
 function updatePresence() {

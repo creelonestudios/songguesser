@@ -1,4 +1,8 @@
 import { readdirSync } from "fs";
+import Logger from "./logger.js"
+import { COLOR } from "./logger.js"
+
+const logger = new Logger("Commands", COLOR.DARK_YELLOW)
 
 export async function load(bot) {
   bot.commands = await loadCommands();
@@ -8,7 +12,7 @@ export async function loadCommands() {
   let commands = {};
   const files = readdirSync("./commands/")
   for(const file of files) {
-    console.log("[Commands] Loading command: " + file);
+    logger.log("Loading command: " + file);
     const command = (await import(`./commands/${file}`)).default;
     commands[command.name] = command;
   }
@@ -27,14 +31,14 @@ export function register(bot) {
         }
       }
       try {
-        console.log(`[${interaction.user.username}] /${interaction.commandName}`);
+        logger.log(`[${interaction.user.username}] /${interaction.commandName}`);
         await bot.commands[interaction.commandName].run(bot, interaction);
       } catch (error) {
-        console.error(error);
+        logger.error(error);
         interaction.reply({ content: ":woozy_face: There was an error executing that command.", ephemeral: true });
       }
     } else {
-      console.error("[Commands] Unknown command received: " + interaction.commandName);
+      logger.error("Unknown command received: " + interaction.commandName);
       interaction.reply({ content: ":woozy_face: I don't know of that command.", ephemeral: true });
     }
   });

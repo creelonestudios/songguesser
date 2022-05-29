@@ -2,11 +2,15 @@ import { Client } from "discord.js";
 import config from "./config.json" assert {type: "json"};
 import { load, register } from "./commands.js"
 import statusmgr from "./statusmgr.js"
+import LyricsMan from "./lyrics.js"
+import Logger from "./logger.js"
+import { COLOR } from "./logger.js"
 
+const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
 export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
 
 bot.on("ready", async () => {
-  console.log(`Logged in as ${bot.user.tag}!`);
+  logger.log(`Logged in as ${bot.user.tag}!`);
 
 	statusmgr()
 
@@ -21,7 +25,7 @@ bot.on("ready", async () => {
 
 bot.on("messageCreate", (msg) => {
   // TODO: handle guesses
-	console.log(msg.author.tag, msg.content)
+	logger.log(msg.author.tag, msg.content)
 	if(msg.author.id == bot.user.id) return
 	if(msg.partial) return msg.fetch().then(handleMessage)
 	else handleMessage(msg)

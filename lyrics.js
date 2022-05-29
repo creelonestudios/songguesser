@@ -1,5 +1,9 @@
-import fs from "fs/promises";
+import fs from "fs/promises"
+import Logger from "./logger.js"
+import { COLOR } from "./logger.js"
+import { bot } from "./main.js"
 
+const logger = new Logger("Lyrics", COLOR.LIGHT_BLUE)
 const lyrics = []
 
 export default class LyricsMan {
@@ -100,14 +104,14 @@ let files = await fs.readdir("./lyrics/")
 let a = []
 for(let f of files) {
 	if(!f.endsWith(".lyrics")) {
-		console.error(`[Lyrics] load ${f}:`, "Lyrics files have to end with .lyrics")
+		logger.error(`load ${f}:`, "Lyrics files have to end with .lyrics")
 		continue
 	}
 	let data = ""
 	try {
 		data = await fs.readFile("./lyrics/" + f, { encoding: "utf-8" })
 	} catch(e) {
-		console.error(`[Lyrics] load ${f}:`, e)
+		logger.error(`load ${f}:`, e)
 		continue
 	}
 	if(data) {
@@ -115,10 +119,10 @@ for(let f of files) {
 			lyrics.push(new Lyrics(data))
 			a.push(f.substr(0, f.length - 7))
 		} catch(e) {
-			console.error(`[Lyrics] load ${f}:`, e)
+			logger.error(`load ${f}:`, e)
 		}
 	}
 }
 
-console.log(`[Lyrics] Loaded lyrics: ${a.join(", ")}`)
+logger.log(`Loaded lyrics: ${a.join(", ")}`)
 //console.log(lyrics)
