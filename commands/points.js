@@ -47,7 +47,7 @@ export default {
 			const embed = new MessageEmbed();
 			embed.setTitle(`${user.username}'s points`);
 			embed.setFooter("SongGuesser");
-			embed.setColor([0, 230, 0]);
+			embed.setColor("YELLOW");
 			embed.addField("Global", point.global + " points", true);
 			embed.addField("Guild", point.guildpoints + " points", true);
 			interaction.reply({ embeds: [embed] });
@@ -61,7 +61,7 @@ export default {
 			const embed = new MessageEmbed();
 			embed.setTitle("Top list for " + (global ? "all guilds" : interaction.guild.name));
 			embed.setFooter("SongGuesser");
-			embed.setColor([0, 230, 0]);
+			embed.setColor("#3cbd9b");
 			embed.addFields(top.map(u => {
 				const id = u[0];
 				const point = u[1];
