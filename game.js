@@ -106,7 +106,7 @@ export default class Game {
 			title: "GUESS SONG",
 			description: s,
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
-		}]})
+		}]}
 
 		if(interaction) interaction.reply(msgopt)
 		else this.channel.send(msgopt)
