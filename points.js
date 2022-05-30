@@ -29,7 +29,7 @@ class Points {
 
 	getTopList(gid) {
 		let list = this.points
-		if(gid) list = this.guildpoints(gid) || new Map()
+		if(gid) list = this.guildpoints.get(gid) || new Map()
 		list = Array.from(list)
 
 		return list.sort((a, b) => b[1] - a[1])
