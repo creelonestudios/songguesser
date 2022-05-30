@@ -21,14 +21,19 @@ export default {
       ]
     },
     {
-      type: 1,
+      type: 2,
       name: "top",
-      description: "View the top list",
+    	description: "View the top list",
       options: [
         {
-          type: 5,
+          type: 1,
           name: "global",
-          description: "If all points from all guilds should be counted. Defaults to no"
+          description: "View the global top list"
+        },
+        {
+          type: 1,
+          name: "guild",
+          description: "View the top list of this guild"
         }
       ]
     }
@@ -36,17 +41,22 @@ export default {
 	run: async (bot, interaction) => {
 		const sub = interaction.options.getSubcommand();
 		if(sub === "get") {
-			const user = interaction.options.getOption("user") || interaction.author;
-			const points = points.getPoints(user.id, interaction.guild.id);
+			const user = interaction.options.getUser("user") || interaction.user;
+			const point = points.getPoints(user.id, interaction.guild.id);
+			console.log(point);
 			const embed = new MessageEmbed();
 			embed.setTitle(`${user.username}'s points`);
 			embed.setFooter("SongGuesser");
 			embed.setColor([0, 230, 0]);
-			embed.addField("Global", points.global, true);
-			embed.addField("Guild", points.guildpoints, true);
+			embed.addField("Global", point.global + " points", true);
+			embed.addField("Guild", point.guildpoints + " points", true);
 			interaction.reply({ embeds: [embed] });
-		} else if(sub === "top") {
-			const global = interaction.options.getBoolean("global") || false;
+		} else if(sub === "guild" || sub === "global") {
+			const global = sub === "global";
+			if(!interaction.guild && !global) {
+				interaction.reply("You can only view the guild top list in a guild");
+				return;
+			}
 			const top = global ? points.getTopList() : points.getTopList(interaction.guild.id);
 			const embed = new MessageEmbed();
 			embed.setTitle("Top list for " + (global ? "all guilds" : interaction.guild.name));
@@ -54,11 +64,11 @@ export default {
 			embed.setColor([0, 230, 0]);
 			embed.addFields(top.map(u => {
 				const id = u[0];
-				const points = u[1];
+				const point = u[1];
 				const user = bot.users.cache.get(id);
 				return {
 					name: `${user ? user.username : "Unknown"}`,
-					value: `${points} points`,
+					value: `${point} points`,
 				};
 			}));
 			interaction.reply({ embeds: [embed] });
