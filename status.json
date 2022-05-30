@@ -9,6 +9,10 @@
 	{ "name": "getting coded!", "type": "PLAYING" },
 	{ "name": "song guessing",  "type": "PLAYING" },
 	{ "name": "%s songs",       "type": "PLAYING" },
-	{ "name": "to %s songs",    "type": "LISTENING" },
-	{ "name": "for guesses",    "type": "WATCHING"}
+	{ "name": "%s songs",       "type": "LISTENING" },
+	{ "name": "for guesses",    "type": "WATCHING"},
+	{ "name": "%t",             "type": "PLAYING"},
+	{ "name": "%t",             "type": "LISTENING"},
+	{ "name": "songs by %a",    "type": "PLAYING"},
+	{ "name": "songs by %a",   "type": "LISTENING"}
 ]
