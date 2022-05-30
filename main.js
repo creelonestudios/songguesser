@@ -40,11 +40,6 @@ I can only recommend <@318394797822050315> and <@418109742183874560>.
 Also try talking to people in discord.gg/Uf8nbhh`)
 	return
 	}
-	if(msg.content == "May I get some points please?") {
-		msg.channel.send("Sure, I'll give you some points.")
-		points.addPoints(msg.author.id, msg.guild.id, 10)
-		return
-	}
 }
 
 bot.login(config.token);
