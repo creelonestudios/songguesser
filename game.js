@@ -48,15 +48,18 @@ export default class Game {
 	guess(msg) {
 		let s = msg.content.toLowerCase()
 		let guess = false
+		let author = this.lyrics.author.toLowerCase().replaceAll(/[^\w\s]/g, "")
+		let title = this.lyrics.title.toLowerCase().replaceAll(/[^\w\s]/g, "")
+		console.log(author, title)
 
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
 			e = e.trim()
-			if(e == this.lyrics.author.toLowerCase() && !this.guesser.author) {
+			if(e == author && !this.guesser.author) {
 				this.guesser.author = msg.author.id
 				guess = true
 			}
-			if(e == this.lyrics.title.toLowerCase() && !this.guesser.title) {
+			if(e == title && !this.guesser.title) {
 				this.guesser.title = msg.author.id
 				guess = true
 			}
