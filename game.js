@@ -19,6 +19,7 @@ export default class Game {
 			title:  null
 		}
 		this.voicecon = null
+		this.voiceresource = null
 	}
 
 	start() {
@@ -39,9 +40,9 @@ export default class Game {
 				selfDeaf: false
 			})
 			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
-			let resource = voice.createAudioResource(stream)
+			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
 			let player = voice.createAudioPlayer()
-			player.play(resource)
+			player.play(this.voiceresource)
 			this.voicecon.subscribe(player)
 		}
 	}
@@ -63,7 +64,16 @@ export default class Game {
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason)
 
-		if(this.voicecon) this.voicecon.destroy()
+		if(this.voicecon) {
+			function fadeOut(res, con) {
+				let vol = res.volume.volume * 0.85
+				res.volume.setVolume(vol)
+				if(vol > 0.0001) setTimeout(fadeOut, 15, res, con)
+				else con.destroy()
+			}
+
+			fadeOut(this.voiceresource, this.voicecon, 1)
+		}
 	}
 
 	guess(msg) {
