@@ -1,4 +1,5 @@
 import ytdl from "ytdl-core"
+import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
 import { bot } from "./main.js"
 
@@ -17,6 +18,7 @@ export default class Game {
 			author: null,
 			title:  null
 		}
+		this.voicecon = null
 	}
 
 	start() {
@@ -25,6 +27,23 @@ export default class Game {
 		logger.log(`Started a game in #${this.channel.name}`)
 		logger.debug(`Song: ${this.lyrics.author} - ${this.lyrics.title}`)
 		this.t = Date.now()
+
+		if(this.voice && this.lyrics.url) {
+			logger.debug("Trying to join voice channel...")
+			let vc = this.voice
+			this.voicecon = voice.joinVoiceChannel({
+				channelId: vc.id,
+				guildId: vc.guild.id,
+				adapterCreator: vc.guild.voiceAdapterCreator,
+				selfMute: false,
+				selfDeaf: false
+			})
+			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
+			let resource = voice.createAudioResource(stream)
+			let player = voice.createAudioPlayer()
+			player.play(resource)
+			this.voicecon.subscribe(player)
+		}
 	}
 
 	sendLyrics() {
@@ -43,6 +62,8 @@ export default class Game {
 		this.running = false
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason)
+
+		if(this.voicecon) this.voicecon.destroy()
 	}
 
 	guess(msg) {
