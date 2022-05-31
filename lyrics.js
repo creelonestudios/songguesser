@@ -111,7 +111,7 @@ class Lyrics {
 	}
 
 	async fetchLength() {
-		ytdl.getInfo(this.url).then(info => {
+		ytdl.getBasicInfo(this.url).then(info => {
 			this.#length = parseInt(info.videoDetails.lengthSeconds)
 		}).catch(e => {
 			throw new LyricsFormatError(`could not load song length from url`, e)
