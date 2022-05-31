@@ -1,4 +1,5 @@
 import ytdl from "ytdl-core"
+import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
 import { bot } from "./main.js"
 
@@ -17,6 +18,9 @@ export default class Game {
 			author: null,
 			title:  null
 		}
+		this.voicecon = null
+		this.voiceresource = null
+		this.voiceplayer = null
 	}
 
 	start() {
@@ -25,6 +29,23 @@ export default class Game {
 		logger.log(`Started a game in #${this.channel.name}`)
 		logger.debug(`Song: ${this.lyrics.author} - ${this.lyrics.title}`)
 		this.t = Date.now()
+
+		if(this.voice && this.lyrics.url) {
+			logger.debug("Trying to join voice channel...")
+			let vc = this.voice
+			this.voicecon = voice.joinVoiceChannel({
+				channelId: vc.id,
+				guildId: vc.guild.id,
+				adapterCreator: vc.guild.voiceAdapterCreator,
+				selfMute: false,
+				selfDeaf: false
+			})
+			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
+			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
+			this.voiceplayer = voice.createAudioPlayer()
+			this.voiceplayer.play(this.voiceresource)
+			this.voicecon.subscribe(this.voiceplayer)
+		}
 	}
 
 	sendLyrics() {
@@ -43,6 +64,20 @@ export default class Game {
 		this.running = false
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason)
+
+		if(this.voicecon) {
+			function fadeOut(res, con, player) {
+				let vol = res.volume.volume * 0.85
+				res.volume.setVolume(vol)
+				if(vol > 0.0001) setTimeout(fadeOut, 15, res, con, player)
+				else {
+					player.stop()
+					// con.unsubscribe(player)
+				}
+			}
+
+			fadeOut(this.voiceresource, this.voicecon, this.voiceplayer)
+		}
 	}
 
 	guess(msg) {
