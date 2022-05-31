@@ -1,4 +1,5 @@
 import fs from "fs/promises"
+import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
@@ -42,6 +43,7 @@ export default class LyricsMan {
 
 class Lyrics {
 
+	#length
 	constructor(data) {
 
 		this.author = undefined
@@ -51,6 +53,7 @@ class Lyrics {
 		this.credit = []
 		this.options = {}
 		this.lines = []
+		this.#length = undefined
 
 		let lines = data.split(/\r\n|\r|\n/)
 
@@ -101,14 +104,26 @@ class Lyrics {
 
 		}
 
-		if(!this.author || !this.title || !this.release) {
+		if(!this.author || !this.title || !this.release || !this.url) {
 			throw new LyricsFormatError(`missing meta tags: author, title and release are required`) + ""
 		}
 
 	}
 
+	async fetchLength() {
+		ytdl.getInfo(this.url).then(info => {
+			this.#length = parseInt(info.videoDetails.lengthSeconds)
+		}).catch(e => {
+			throw new LyricsFormatError(`could not load song length from url`, e)
+		})
+	}
+
 	opt(k) {
 		return this.options[k] || 0
+	}
+
+	get length() {
+		return this.options.length || this.#length
 	}
 
 }
@@ -161,7 +176,9 @@ for(let f of files) {
 	}
 	if(data) {
 		try {
-			lyrics.push(new Lyrics(data))
+			let l = new Lyrics(data)
+			if(!l.length) await l.fetchLength()
+			lyrics.push(l)
 			a.push(f.substr(0, f.length - 7))
 		} catch(e) {
 			logger.error(`load ${f}:`, e)
