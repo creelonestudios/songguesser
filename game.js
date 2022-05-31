@@ -20,6 +20,7 @@ export default class Game {
 		}
 		this.voicecon = null
 		this.voiceresource = null
+		this.voiceplayer = null
 	}
 
 	start() {
@@ -41,9 +42,9 @@ export default class Game {
 			})
 			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
 			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
-			let player = voice.createAudioPlayer()
-			player.play(this.voiceresource)
-			this.voicecon.subscribe(player)
+			this.voiceplayer = voice.createAudioPlayer()
+			this.voiceplayer.play(this.voiceresource)
+			this.voicecon.subscribe(this.voiceplayer)
 		}
 	}
 
@@ -65,14 +66,17 @@ export default class Game {
 		this.sendEndStatus(reason)
 
 		if(this.voicecon) {
-			function fadeOut(res, con) {
+			function fadeOut(res, con, player) {
 				let vol = res.volume.volume * 0.85
 				res.volume.setVolume(vol)
-				if(vol > 0.0001) setTimeout(fadeOut, 15, res, con)
-				else con.destroy()
+				if(vol > 0.0001) setTimeout(fadeOut, 15, res, con, player)
+				else {
+					player.stop()
+					// con.unsubscribe(player)
+				}
 			}
 
-			fadeOut(this.voiceresource, this.voicecon, 1)
+			fadeOut(this.voiceresource, this.voicecon, this.voiceplayer)
 		}
 	}
 
