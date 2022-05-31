@@ -39,10 +39,10 @@ export default class Game {
 		if(this.i >= this.lyrics.lines.length) this.stop("timeup")
 	}
 
-	stop(reason) {
+	stop(reason, interaction) {
 		this.running = false
 		logger.log(`Game in #${this.channel.name} ended`)
-		this.sendEndStatus(reason)
+		this.sendEndStatus(reason, interaction)
 	}
 
 	guess(msg) {
@@ -85,7 +85,7 @@ export default class Game {
 		else this.channel.send(msgopt)
 	}
 
-	sendEndStatus(reason) {
+	sendEndStatus(reason, interaction) {
 		const reasonTexts = {
 			guessed: "Song was guessed!",
 			timeup:  "Time is up!",
@@ -94,11 +94,15 @@ export default class Game {
 		let s = ""
 		if(this.guesser.author) s += `\n<@${this.guesser.author}>`
 		if(this.guesser.title && this.guesser.title != this.guesser.author) s += `\n<@${this.guesser.title}>`
-		this.channel.send({embeds: [{
+
+		let msgopt = {embeds: [{
 			title: reasonTexts[reason] || "Song ended",
-			description: `Winners:` + (s || "no one"),
+			description: `${this.lyrics.author} - ${this.lyrics.title}\n\nWinners:` + (s || " no one"),
 			footer: "SongGuesser vTODO: insert version here" // TODO
-		}]})
+		}]}
+
+		if(interaction) interaction.reply(msgopt)
+		else this.channel.send(msgopt)
 	}
 
 }

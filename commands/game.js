@@ -72,7 +72,7 @@ export default {
 				}]})
 				return;
 			}
-			game.stop("ended")
+			game.stop("stopped", interaction)
 		} else if(sub === "info") {
 			const game = games[interaction.channel.id]
 			if(!game) {
