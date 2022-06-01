@@ -50,7 +50,7 @@ export default class Game {
 
 	sendLyrics() {
 		if(this.voice && this.lyrics.length && this.lyrics.length > 0) {
-			console.log(this.lyrics.length, this.t + this.lyrics.length * 1000 - Date.now(), Date.now() - this.t > this.lyrics.length * 1000)
+			// console.log(this.lyrics.length, this.t + this.lyrics.length * 1000 - Date.now(), Date.now() - this.t > this.lyrics.length * 1000)
 			if(Date.now() - this.t > this.lyrics.length * 1000) {
 				this.stop("timeup")
 				return
@@ -89,7 +89,7 @@ export default class Game {
 		let guess = false
 		let author = this.lyrics.author.toLowerCase().replaceAll(/[^\w\s]/g, "")
 		let title = this.lyrics.title.toLowerCase().replaceAll(/[^\w\s]/g, "")
-		console.log(author, title)
+		//console.log(author, title)
 
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
