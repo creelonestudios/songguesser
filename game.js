@@ -98,7 +98,7 @@ export default class Game {
 				}]})
 			}
     }
-      
+    
 		if(this.voicecon) {
 			function fadeOut(res, con, player) {
 				let vol = res.volume.volume * 0.85

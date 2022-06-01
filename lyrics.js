@@ -19,8 +19,8 @@ export default class LyricsMan {
 		bot.on("messageCreate", msg => {
 			if(msg.author.bot) return
 			let c = msg.channel
-			for(let i in games) {
-				let g = games[i]
+			for(let id in games) {
+				let g = games[id]
 				if(g.running && g.channel.id == c.id) {
 					g.guess(msg)
 					break // there can only be one game be in each channel anyways
@@ -29,8 +29,8 @@ export default class LyricsMan {
 		})
 
 		setInterval(() => {
-			for(let i in games) {
-				let g = games[i]
+			for(let id in games) {
+				let g = games[id]
 				if(g.running) {
 					g.sendLyrics()
 				}
