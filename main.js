@@ -14,6 +14,7 @@ bot.on("ready", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);
 
 	statusmgr()
+	new LyricsMan(bot)
 
 	await load(bot);
 	register(bot);
