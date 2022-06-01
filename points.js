@@ -9,7 +9,6 @@ class Points {
 		this.points = new Map() // userid -> points
 		this.guildpoints = new Map() // guildid -> (userid -> points)
 		db.query("SELECT * FROM users").then(rows => {
-			logger.debug(rows);
 			for(const row of rows[0]) {
 				if(!this.points.has(row.id)) this.points.set(row.id + "", row.points);
 				else this.points.set(row.id, this.points.get(row.id + "") + row.points)
