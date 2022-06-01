@@ -102,6 +102,10 @@ class Lyrics {
 				throw new LyricsSyntaxError(i, `timestamp must be a non-negative integer`) + ""
 			}
 
+			if(line.length == 0) {
+				throw new LyricsSyntaxError(i, `line must not be empty`) + ""
+			}
+
 		}
 
 		if(!this.author || !this.title || !this.release || !this.url) {
