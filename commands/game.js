@@ -55,7 +55,7 @@ export default {
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
 			let i = Math.floor(Math.random() * lyrics.length)
-			const game = new Game(lyrics[i], interaction.channel, undefined)
+			const game = new Game(lyrics[i], interaction.channel, interaction.member.voice.channel)
 			game.start();
 			games[interaction.channel.id] = game
 			interaction.reply({ embeds: [{
@@ -72,7 +72,7 @@ export default {
 				}]})
 				return;
 			}
-			game.stop("ended")
+			game.stop("stopped", interaction)
 		} else if(sub === "info") {
 			const game = games[interaction.channel.id]
 			if(!game) {
