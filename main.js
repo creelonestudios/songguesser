@@ -11,8 +11,6 @@ import { db, createTables } from "./sql.js";
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
 export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
 
-const lyricsman = new LyricsMan(bot)
-
 bot.on("ready", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);
 
