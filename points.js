@@ -2,7 +2,6 @@ import { db } from "./sql.js";
 import Logger, { COLOR } from "./logger.js";
 
 const logger = new Logger("Points", COLOR.LIGHT_GREEN)
-
 class Points {
 
 	constructor() {
@@ -37,7 +36,6 @@ class Points {
 	}
 
 	getPoints(uid, gid) {
-		logger.debug(this.points, this.points.get(uid), uid, typeof uid)
 		let globalpoints = this.points.get(uid) || 0
 		let guild = this.guildpoints.get(gid) || new Map()
 		let guildpoints = guild.get(uid) || 0

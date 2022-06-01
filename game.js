@@ -50,10 +50,14 @@ export default class Game {
 	}
 
 	sendLyrics() {
-		if(this.lyrics.lines.length < 1) {
-			if(Date.now() - this.t > (this.lyrics.options.length || 0)) this.stop("timeup")
-			return
+		if(this.voice && this.lyrics.length && this.lyrics.length > 0) {
+			// console.log(this.lyrics.length, this.t + this.lyrics.length * 1000 - Date.now(), Date.now() - this.t > this.lyrics.length * 1000)
+			if(Date.now() - this.t > this.lyrics.length * 1000) {
+				this.stop("timeup")
+				return
+			}
 		}
+		if(this.lyrics.lines.length == 0) return
 		let line = this.lyrics.lines[this.i]
 		if(Date.now() - this.t < line.t) return
 		this.channel.send(line.s)
@@ -93,8 +97,9 @@ export default class Game {
 					color: "#00ff00"
 				}]})
 			}
-      
-      if(this.voicecon) {
+    }
+    
+		if(this.voicecon) {
 			function fadeOut(res, con, player) {
 				let vol = res.volume.volume * 0.85
 				res.volume.setVolume(vol)
@@ -114,7 +119,7 @@ export default class Game {
 		let guess = false
 		let author = this.lyrics.author.toLowerCase().replaceAll(/[^\w\s]/g, "")
 		let title = this.lyrics.title.toLowerCase().replaceAll(/[^\w\s]/g, "")
-		console.log(author, title)
+		//console.log(author, title)
 
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
