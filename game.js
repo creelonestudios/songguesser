@@ -39,7 +39,7 @@ export default class Game {
 				guildId: vc.guild.id,
 				adapterCreator: vc.guild.voiceAdapterCreator,
 				selfMute: false,
-				selfDeaf: false
+				selfDeaf: true
 			})
 			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
 			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
