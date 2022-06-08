@@ -8,7 +8,6 @@ export default {
 	category: "basic",
 	hide: false,
 	guildOnly: false,
-	// options: game start <id>|random    game stop     game info     game list
 	options: [
 		{
 			type: 1,
@@ -19,7 +18,12 @@ export default {
 					type: 4,
 					name: "songid",
 					description: "Id of the song"
-				}
+				},
+        {
+          type: 5,
+          name: "discover",
+          description: "Discover unknown songs"
+        }
 			]
 		},
 		{
@@ -45,7 +49,7 @@ export default {
 			embed.setTitle("Songs (" + lyrics.length + ")");
 			embed.setFooter("SongGuesser");
 			embed.setColor([0, 230, 0]);
-			embed.addFields(lyrics.map(l => {
+			embed.addFields(lyrics.filter(l => !l.options.discover).map(l => {
 				return {
 					name: `${l.title}`,
 					value: `${l.author} (${l.release})`,
@@ -54,13 +58,16 @@ export default {
 			}));
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
-			let i = Math.floor(Math.random() * lyrics.length)
-			const game = new Game(lyrics[i], interaction.channel, interaction.member.voice.channel)
+      const discover = interaction.options.getBoolean("discover");
+      let useLyrics = discover ? lyrics.filter(l => l.options.discover) : lyrics.filter(l => !l.options.discover);
+			let i = Math.floor(Math.random() * useLyrics.length)
+			const game = new Game(useLyrics[i], interaction.channel, interaction.member.voice.channel)
+      game.discover = true;
 			game.start();
 			games[interaction.channel.id] = game
 			interaction.reply({ embeds: [{
 				title: "**Game started!**",
-				description: `??? - ???`,
+				description: `??? - ???${discover ? " (discover mode)" : ""}`,
 			}]})
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]

@@ -22,6 +22,7 @@ export default class Game {
 		this.voicecon = null
 		this.voiceresource = null
 		this.voiceplayer = null
+    this.discover = false
 	}
 
 	start() {
@@ -143,6 +144,7 @@ export default class Game {
 		let s = `${this.guesser.author ? this.lyrics.author : "???"} - ${this.guesser.title ? this.lyrics.title : "???"}`
 		if(this.guesser.author) s += `\nAuthor guessed by <@${this.guesser.author}>`
 		if(this.guesser.title) s += `\nTitle guessed by <@${this.guesser.title}>`
+    if(this.discover) s += " (discover mode)"
 
 		let msgopt = {embeds: [{
 			title: "GUESS SONG",
