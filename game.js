@@ -22,7 +22,7 @@ export default class Game {
 		this.voicecon = null
 		this.voiceresource = null
 		this.voiceplayer = null
-    this.discover = false
+		this.discover = false
 	}
 
 	start() {
@@ -98,8 +98,8 @@ export default class Game {
 					color: "#00ff00"
 				}]})
 			}
-    }
-    
+		}
+		
 		if(this.voicecon) {
 			function fadeOut(res, con, player) {
 				let vol = res.volume.volume * 0.85
@@ -142,9 +142,9 @@ export default class Game {
 
 	sendStatus(interaction) {
 		let s = `${this.guesser.author ? this.lyrics.author : "???"} - ${this.guesser.title ? this.lyrics.title : "???"}`
+		if(this.discover) s += " (discover mode)"
 		if(this.guesser.author) s += `\nAuthor guessed by <@${this.guesser.author}>`
 		if(this.guesser.title) s += `\nTitle guessed by <@${this.guesser.title}>`
-    if(this.discover) s += " (discover mode)"
 
 		let msgopt = {embeds: [{
 			title: "GUESS SONG",
