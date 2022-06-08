@@ -19,11 +19,11 @@ export default {
 					name: "songid",
 					description: "Id of the song"
 				},
-        {
-          type: 5,
-          name: "discover",
-          description: "Discover unknown songs"
-        }
+				{
+					type: 5,
+					name: "discover",
+					description: "Discover unknown songs"
+				}
 			]
 		},
 		{
@@ -58,11 +58,11 @@ export default {
 			}));
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
-      const discover = interaction.options.getBoolean("discover");
-      let useLyrics = discover ? lyrics.filter(l => l.options.discover) : lyrics.filter(l => !l.options.discover);
+			const discover = interaction.options.getBoolean("discover");
+			let useLyrics = discover ? lyrics.filter(l => l.options.discover) : lyrics.filter(l => !l.options.discover);
 			let i = Math.floor(Math.random() * useLyrics.length)
 			const game = new Game(useLyrics[i], interaction.channel, interaction.member.voice.channel)
-      game.discover = true;
+			game.discover = true;
 			game.start();
 			games[interaction.channel.id] = game
 			interaction.reply({ embeds: [{
