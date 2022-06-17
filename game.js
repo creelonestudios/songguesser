@@ -140,11 +140,11 @@ export default class Game {
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
 			e = e.trim()
-			if(e == author && !this.guesser.author) {
+			if((e == author || this.lyrics.alias.author.includes(e)) && !this.guesser.author) {
 				this.guesser.author = msg.author.id
 				guess = true
 			}
-			if(e == title && !this.guesser.title) {
+			if((e == title || this.lyrics.alias.title.includes(e)) && !this.guesser.title) {
 				this.guesser.title = msg.author.id
 				guess = true
 			}
