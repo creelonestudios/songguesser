@@ -51,6 +51,7 @@ class Lyrics {
 		this.release = undefined
 		this.url = ""
 		this.credit = []
+		this.alias = { author: [], title: [] }
 		this.options = {}
 		this.lines = []
 		this.#length = undefined
@@ -78,6 +79,16 @@ class Lyrics {
 				else if(k == "release") this.release = v
 				else if(k == "url") this.url = v
 				else if(k == "credit") this.credit = this.credit.concat(words)
+				else if(k == "alias") {
+					let k = words[0]
+					words.shift()
+					let v = words.join(" ")
+					if(k == "author") this.alias.author.push(v)
+					else if(k == "title") this.alias.title.push(v)
+					else {
+						throw new LyricsSyntaxError(i, `invalid alias '${k}'`) + ""
+					}
+				}
 				else if(k == "option") {
 					let k = words[0]
 					words.shift()
