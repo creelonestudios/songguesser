@@ -54,6 +54,10 @@ export default class Game {
 
 			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
 			this.voiceplayer = voice.createAudioPlayer()
+			this.voiceplayer.on("error", e => {
+				console.error(e)
+				this.stop("error", null, `AudioPlayerError: ${e.message}`)
+			})
 			this.voiceplayer.play(this.voiceresource)
 			this.voicecon.subscribe(this.voiceplayer)
 		} else { // immediate start
@@ -81,10 +85,10 @@ export default class Game {
 		} else if(this.i >= this.lyrics.lines.length) this.stop("timeup")
 	}
 
-	stop(reason, interaction) {
+	stop(reason, interaction, errInfo) {
 		this.state = Game.ENDED
 		logger.log(`Game in #${this.channel.name} ended`)
-		this.sendEndStatus(reason, interaction)
+		this.sendEndStatus(reason, interaction, errInfo)
 
 		if(reason != "stopped") {
 			let s = []
@@ -170,11 +174,12 @@ export default class Game {
 		else this.channel.send(msgopt)
 	}
 
-	sendEndStatus(reason, interaction) {
+	sendEndStatus(reason, interaction, errInfo) {
 		const reasonTexts = {
 			guessed: "Song was guessed!",
 			timeup:  "Time is up!",
-			stopped: ":octagonal_sign: Game stopped!"
+			stopped: ":octagonal_sign: Game stopped!",
+			error:   ":warning: An error occurred!"
 		}
 		let s = ""
 		if(this.guesser.author) s += `\n<@${this.guesser.author}>`
@@ -185,6 +190,11 @@ export default class Game {
 			description: `${this.lyrics.author} - ${this.lyrics.title}\n\nWinners:` + (s || " no one"),
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]}
+
+		if(reason == "error") {
+			if(errInfo) msgopt.fields = [{name: "error", value: errInfo}]
+			msgopt.color = "#ff0000"
+		}
 
 		if(interaction) interaction.reply(msgopt)
 		else this.channel.send(msgopt)
