@@ -177,7 +177,7 @@ export default class Game {
 
 	sendStatus(interaction, title) {
 		let msgopt = {embeds: [{
-			title: title || "GUESS SONG",
+			title: `**${title || "GUESS SONG"}**`,
 			description: this.gameInfo,
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]}
@@ -197,7 +197,7 @@ export default class Game {
 		let feat = this.lyrics.features.length > 0 ? ` feat. ${this.lyrics.features.join(", ")}` : ""
 
 		let msgopt = {embeds: [{
-			title: reasonTexts[reason] || "Song ended",
+			title: `**${reasonTexts[reason] || "Song ended"}**`,
 			description: `${this.lyrics.author} - ${this.lyrics.title}${feat}\n\nWinners:` + (guessers ? ("\n" + guessers) : " no one"),
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]}
