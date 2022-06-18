@@ -48,6 +48,7 @@ class Lyrics {
 
 		this.author = undefined
 		this.title = undefined
+		this.features = []
 		this.release = undefined
 		this.url = ""
 		this.credit = []
@@ -77,6 +78,7 @@ class Lyrics {
 				if(k == "author") this.author = v
 				else if(k == "title") this.title = v
 				else if(k == "release") this.release = v
+				else if(k == "feat") this.features.push(v)
 				else if(k == "url") this.url = v
 				else if(k == "credit") this.credit = this.credit.concat(words)
 				else if(k == "alias") {
