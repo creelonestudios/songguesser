@@ -22,7 +22,8 @@ export default class Game {
 		this.t       = -1
 		this.guesser = {
 			author: null,
-			title:  null
+			title:  null,
+			features: []
 		}
 		this.voicecon = null
 		this.voiceresource = null
@@ -92,21 +93,26 @@ export default class Game {
 
 		if(reason != "stopped") {
 			let s = []
+			let guesserpoints = {}
+
 			if(this.guesser.title != this.guesser.author) {
-				if(this.guesser.title) {
-					points.addPoints(this.guesser.title, this.channel.guild.id, 1)
-					let u = bot.users.cache.get(this.guesser.title)
-					s.push(u.username + " gained 1 point.")
-				}
-				if(this.guesser.author) {
-					points.addPoints(this.guesser.author, this.channel.guild.id, 1)
-					let u = bot.users.cache.get(this.guesser.author)
-					s.push(u.username + " gained 1 point.")
-				}
+				if(this.guesser.title)  guesserpoints[this.guesser.title] = 1
+				if(this.guesser.author) guesserpoints[this.guesser.title] = 1
 			} else if(this.guesser.title) {
-				points.addPoints(this.guesser.title, this.channel.guild.id, 3)
-				let u = bot.users.cache.get(this.guesser.title)
-				s.push(u.username + " gained 3 points.")
+				guesserpoints[this.guesser.title] = 3
+			}
+
+			for(let id of this.guesser.features) {
+				if(!guesserpoints[id]) guesserpoints[id] = 0.5
+				else guesserpoints[id] += 0.5
+			}
+
+			for(let id of Object.keys(guesserpoints)) {
+				let p = guesserpoints[id]
+				points.addPoints(id, this.channel.guild.id, p)
+				let u = bot.users.cache.get(id)
+				if(p == 1) s.push(u.username + " gained 1 point.")
+				else s.push(u.username + ` gained ${p} points.`)
 			}
 
 			if(s.length > 0) {
@@ -137,20 +143,34 @@ export default class Game {
 	guess(msg) {
 		let s = msg.content.toLowerCase()
 		let guess = false
-		let author = this.lyrics.author.toLowerCase().replaceAll(/[^\w\s]/g, "")
-		let title = this.lyrics.title.toLowerCase().replaceAll(/[^\w\s]/g, "")
-		//console.log(author, title)
+		let author = this.lyrics.author.toLowerCase().replaceAll(/[^\w]/g, "")
+		let title = this.lyrics.title.toLowerCase().replaceAll(/[^\w]/g, "")
+		let feats = []
+		for(let i in this.lyrics.features) {
+			feats.push(this.lyrics.features[i].toLowerCase().replaceAll(/[^\w]/g, ""))
+		}
 
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
-			e = e.trim()
+			e = e.replaceAll(/\s/g, "")
+
 			if((e == author || this.lyrics.alias.author.includes(e)) && !this.guesser.author) {
 				this.guesser.author = msg.author.id
 				guess = true
 			}
+
 			if((e == title || this.lyrics.alias.title.includes(e)) && !this.guesser.title) {
 				this.guesser.title = msg.author.id
 				guess = true
+			}
+
+			if(feats.includes(e)) {
+				let i = feats.indexOf(e)
+				if(!this.guesser.features[i]) {
+					this.guesser.features[i] = msg.author.id
+					guess = true
+					console.log(this.guesser.features)
+				}
 			}
 		}
 
@@ -159,14 +179,10 @@ export default class Game {
 		} else if(guess) this.sendStatus()
 	}
 
-	sendStatus(interaction) {
-		let s = `${this.guesser.author ? this.lyrics.author : "???"} - ${this.guesser.title ? this.lyrics.title : "???"}`
-		if(this.guesser.author) s += `\nAuthor guessed by <@${this.guesser.author}>`
-		if(this.guesser.title) s += `\nTitle guessed by <@${this.guesser.title}>`
-
+	sendStatus(interaction, title) {
 		let msgopt = {embeds: [{
-			title: "GUESS SONG",
-			description: s,
+			title: `**${title || "GUESS SONG"}**`,
+			description: this.gameInfo,
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]}
 
@@ -181,13 +197,13 @@ export default class Game {
 			stopped: ":octagonal_sign: Game stopped!",
 			error:   ":warning: An error occurred!"
 		}
-		let s = ""
-		if(this.guesser.author) s += `\n<@${this.guesser.author}>`
-		if(this.guesser.title && this.guesser.title != this.guesser.author) s += `\n<@${this.guesser.title}>`
+
+		let guessers = this.guessers.join("\n")
+		let feat = this.lyrics.features.length > 0 ? ` feat. ${this.lyrics.features.join(", ")}` : ""
 
 		let msgopt = {embeds: [{
-			title: reasonTexts[reason] || "Song ended",
-			description: `${this.lyrics.author} - ${this.lyrics.title}\n\nWinners:` + (s || " no one"),
+			title: `**${reasonTexts[reason] || "Song ended"}**`,
+			description: `${this.lyrics.author} - ${this.lyrics.title}${feat}\n\nWinners:` + (guessers ? ("\n" + guessers) : " no one"),
 			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
 		}]}
 
@@ -198,6 +214,57 @@ export default class Game {
 
 		if(interaction) interaction.reply(msgopt)
 		else this.channel.send(msgopt)
+	}
+
+	get gameInfo() {
+		let feats = []
+		for(let i in this.lyrics.features) {
+			if(this.guesser.features[i]) feats.push(this.lyrics.features[i])
+			else feats.push("???")
+		}
+
+		let s = `${this.guesser.author ? this.lyrics.author : "???"} - ${this.guesser.title ? this.lyrics.title : "???"}`
+		if(feats.length > 0) s += ` feat. ${feats.join(", ")}`
+
+		if(this.guesser.author) s += `\nAuthor guessed by <@${this.guesser.author}>`
+		if(this.guesser.title) s += `\nTitle guessed by <@${this.guesser.title}>`
+		if(this.guesser.features.length > 0) s += `\nFeature(s) guessed by ${this.featguessers.join(", ")}`
+
+		return s
+	}
+
+	get featguessers() {
+		let a = []
+		let ids = []
+		for(let id of this.guesser.features) {
+			if(!ids.includes(id) && id) {
+				a.push(`<@${id}>`)
+				ids.push(id)
+			}
+		}
+		return a
+	}
+
+	get guessers() {
+		let a = []
+		let ids = []
+
+		if(this.guesser.title && !ids.includes(this.guesser.title)) {
+			a.push(`<@${this.guesser.title}>`)
+			ids.push(this.guesser.title)
+		}
+		if(this.guesser.author && !ids.includes(this.guesser.author)) {
+			a.push(`<@${this.guesser.author}>`)
+			ids.push(this.guesser.author)
+		}
+
+		for(let id of this.guesser.features) {
+			if(!ids.includes(id) && id) {
+				a.push(`<@${id}>`)
+				ids.push(id)
+			}
+		}
+		return a
 	}
 
 }

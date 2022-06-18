@@ -58,10 +58,7 @@ export default {
 			const game = new Game(lyrics[i], interaction.channel, interaction.member.voice.channel)
 			game.start();
 			games[interaction.channel.id] = game
-			interaction.reply({ embeds: [{
-				title: "**Game started!**",
-				description: `??? - ???`,
-			}]})
+			game.sendStatus(interaction, "Game started!")
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]
 			if(!game) {
