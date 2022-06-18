@@ -13,7 +13,7 @@ export default function run() {
 }
 
 function updatePresence() {
-	let random = 14 //Math.floor(Math.random() * (activities.length))
+	let random = Math.floor(Math.random() * (activities.length))
 	let act = activities[random]
 	let r = Math.floor(Math.random() * lyrics.length)
 
