@@ -29,6 +29,12 @@ export default class Player {
 			logger.debug("timed out")
 			game.stop("error", null, `miniget Error: timed out`)
 		})
+		this.stream.on("request", (req) => {
+			logger.debug("request", req)
+		})
+		this.stream.on("response", (res) => {
+			logger.debug("response", res)
+		})
 
 		this.resource = voice.createAudioResource(this.stream, { inlineVolume: true })
 		this.player = voice.createAudioPlayer()
