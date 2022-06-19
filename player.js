@@ -9,7 +9,7 @@ export default class Player {
 
 	constructor(game, voicecon, url) {
 
-		this.stream = ytdl(url, { filter : 'audioonly' })
+		this.stream = ytdl(url, { filter : 'audioonly', requestOptions: { maxReconnects: 10, backoff: { inc: 0, max: 0 } } })
 		this.stream.on("retry", (n, e) => {
 			logger.debug("Retry:", n, e)
 			if(e == undefined) this.player.stop()
