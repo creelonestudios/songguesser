@@ -17,8 +17,10 @@ export default class Player {
 		})
 		this.stream.on("reconnect", (n, e) => {
 			logger.debug("Reconnect:", n, e)
-			/*if(e == undefined) this.player.stop()
-			else game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)*/
+			if(n >= 10) {
+				if(e == undefined) this.player.stop()
+				else game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
+			}
 		})
 		this.stream.on("close", () => {
 			logger.error("closed prematurely")
@@ -36,7 +38,13 @@ export default class Player {
 		this.player = voice.createAudioPlayer()
 		this.player.on("error", e => {
 			console.error(e)
-			game.stop("error", null, `AudioPlayerError: ${e.message}`)
+			//game.stop("error", null, `AudioPlayerError: ${e.message}`)
+			game.channel.send({ embeds: [{
+				title: ":warning: Error",
+				color: "#ff0000",
+				description: "The AudioPlayer errored. The audio might stop playing.\nI express my sincere apologies for the inconvenience. :(",
+				fields: (e && e.message) ? [{name: "AudioPlayerError", value: e.message}] : []
+			}]})
 		})
 		this.player.play(this.resource)
 		voicecon.subscribe(this.player)
