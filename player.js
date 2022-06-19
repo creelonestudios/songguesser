@@ -46,11 +46,12 @@ export default class Player {
 		let vol = this.resource.volume.volume * 0.85
 		this.resource.volume.setVolume(vol)
 		let dis = this // this looses context due to setTimeout
-		if(vol > 0.0001) setTimeout(dis.fadeOut(), 15)
+		if(vol > 0.0001) setTimeout(() => dis.fadeOut(), 15)
 		else {
 			this.player.stop()
 			// con.unsubscribe(player)
 		}
+
 	}
 
 }
