@@ -8,11 +8,16 @@ const logger = new Logger("Game")
 
 export default class Game {
 
+	static IDLING   = -1
+	static STARTING =  0
+	static RUNNING  =  1
+	static ENDED    =  2
+
 	constructor(lyrics, channel, voice) {
 		this.lyrics  = lyrics
 		this.channel = channel
 		this.voice   = voice
-		this.running = false
+		this.state   = Game.IDLING
 		this.i       = 0
 		this.t       = -1
 		this.guesser = {
@@ -25,11 +30,10 @@ export default class Game {
 	}
 
 	start() {
-		this.running = true
+		this.state = Game.STARTING
 		let game = this
 		logger.log(`Started a game in #${this.channel.name}`)
 		logger.debug(`Song: ${this.lyrics.author} - ${this.lyrics.title}`)
-		this.t = Date.now()
 
 		if(this.voice && this.lyrics.url) {
 			logger.debug("Trying to join voice channel...")
@@ -39,34 +43,46 @@ export default class Game {
 				guildId: vc.guild.id,
 				adapterCreator: vc.guild.voiceAdapterCreator,
 				selfMute: false,
-				selfDeaf: false
+				selfDeaf: true
 			})
+
 			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
+			stream.on("response", res => { // delayed start
+				this.t = Date.now() + bot.ws.ping
+				this.state = Game.RUNNING
+			})
+
 			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
 			this.voiceplayer = voice.createAudioPlayer()
 			this.voiceplayer.play(this.voiceresource)
 			this.voicecon.subscribe(this.voiceplayer)
+		} else { // immediate start
+			this.t = Date.now()
+			this.state = Game.RUNNING
 		}
 	}
 
 	sendLyrics() {
+		if(this.lyrics.lines.length == 0) return
+		let line = this.lyrics.lines[this.i]
+		if(line) {
+			if(Date.now() - this.t < line.t) return
+			//logger.debug(Math.floor((Date.now() - this.t) * 10) / 10, this.lyrics.length, this.lyrics.lines[this.i])
+			this.channel.send(line.s)
+		}
+		this.i++
+
 		if(this.voice && this.lyrics.length && this.lyrics.length > 0) {
 			// console.log(this.lyrics.length, this.t + this.lyrics.length * 1000 - Date.now(), Date.now() - this.t > this.lyrics.length * 1000)
 			if(Date.now() - this.t > this.lyrics.length * 1000) {
 				this.stop("timeup")
 				return
 			}
-		}
-		if(this.lyrics.lines.length == 0) return
-		let line = this.lyrics.lines[this.i]
-		if(Date.now() - this.t < line.t) return
-		this.channel.send(line.s)
-		this.i++
-		if(this.i >= this.lyrics.lines.length) this.stop("timeup")
+		} else if(this.i >= this.lyrics.lines.length) this.stop("timeup")
 	}
 
 	stop(reason, interaction) {
-		this.running = false
+		this.state = Game.ENDED
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason, interaction)
 
@@ -98,7 +114,7 @@ export default class Game {
 				}]})
 			}
     }
-    
+
 		if(this.voicecon) {
 			function fadeOut(res, con, player) {
 				let vol = res.volume.volume * 0.85
@@ -124,11 +140,11 @@ export default class Game {
 		let a = s.split(/[^\w\s]/)
 		for(let e of a) {
 			e = e.trim()
-			if(e == author && !this.guesser.author) {
+			if((e == author || this.lyrics.alias.author.includes(e)) && !this.guesser.author) {
 				this.guesser.author = msg.author.id
 				guess = true
 			}
-			if(e == title && !this.guesser.title) {
+			if((e == title || this.lyrics.alias.title.includes(e)) && !this.guesser.title) {
 				this.guesser.title = msg.author.id
 				guess = true
 			}
