@@ -17,7 +17,8 @@ export default class Player {
 		})
 		this.stream.on("reconnect", (n, e) => {
 			logger.debug("Reconnect:", n, e)
-			game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
+			if(e == undefined) this.player.stop()
+			else game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
 		})
 		this.stream.on("close", () => {
 			logger.error("closed prematurely")
