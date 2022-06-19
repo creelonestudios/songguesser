@@ -12,11 +12,11 @@ export default class Player {
 		this.stream = ytdl(url, { filter : 'audioonly' })
 		this.stream.on("retry", (n, e) => {
 			logger.debug("Retry:", n, e)
-			game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
+			game.stop("error", null, `miniget Error: (#${n}) ${typeof e == "number" ? `HTTP status ${e}` : e.message}`)
 		})
 		this.stream.on("reconnect", (n, e) => {
 			logger.debug("Reconnect:", n, e)
-			game.stop("error", null, `miniget Error: (#${n})${e.message}`)
+			game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
 		})
 		this.stream.on("close", () => {
 			logger.error("closed prematurely")
