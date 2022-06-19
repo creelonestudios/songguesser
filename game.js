@@ -1,8 +1,8 @@
-import ytdl from "ytdl-core"
 import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
 import { bot } from "./main.js"
 import points from "./points.js"
+import Player from "./player.js"
 
 const logger = new Logger("Game")
 
@@ -26,8 +26,7 @@ export default class Game {
 			features: []
 		}
 		this.voicecon = null
-		this.voiceresource = null
-		this.voiceplayer = null
+		this.player = null
 	}
 
 	start() {
@@ -47,20 +46,11 @@ export default class Game {
 				selfDeaf: true
 			})
 
-			let stream = ytdl(this.lyrics.url, { filter : 'audioonly' })
-			stream.on("response", res => { // delayed start
+			this.player = new Player(this, this.voicecon, this.lyrics.url)
+			this.player.stream.on("response", res => { // delayed start
 				this.t = Date.now() + bot.ws.ping
 				this.state = Game.RUNNING
 			})
-
-			this.voiceresource = voice.createAudioResource(stream, { inlineVolume: true })
-			this.voiceplayer = voice.createAudioPlayer()
-			this.voiceplayer.on("error", e => {
-				console.error(e)
-				this.stop("error", null, `AudioPlayerError: ${e.message}`)
-			})
-			this.voiceplayer.play(this.voiceresource)
-			this.voicecon.subscribe(this.voiceplayer)
 		} else { // immediate start
 			this.t = Date.now()
 			this.state = Game.RUNNING
@@ -125,18 +115,8 @@ export default class Game {
 			}
     }
 
-		if(this.voicecon) {
-			function fadeOut(res, con, player) {
-				let vol = res.volume.volume * 0.85
-				res.volume.setVolume(vol)
-				if(vol > 0.0001) setTimeout(fadeOut, 15, res, con, player)
-				else {
-					player.stop()
-					// con.unsubscribe(player)
-				}
-			}
-
-			fadeOut(this.voiceresource, this.voicecon, this.voiceplayer)
+		if(this.player) {
+			this.player.fadeOut()
 		}
 	}
 
