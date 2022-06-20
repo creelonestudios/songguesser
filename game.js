@@ -2,9 +2,12 @@ import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
 import { bot } from "./main.js"
 import Round from "./round.js"
+import ButtonRow from "./buttonrow.js"
 import config from "./config.json" assert {type: "json"};
 
 const logger = new Logger("Game")
+
+const minParticipants = config.minParticipants || 2
 
 export default class Game {
 
@@ -24,7 +27,7 @@ export default class Game {
 		this.participants = {}
 		this.participantCount = 1
 		this.voicecon = null
-		this.startmsg = null
+		this.buttonrow = null
 
 		this.participants[initiator.id] = initiator
 	}
@@ -49,39 +52,38 @@ export default class Game {
 		let msgopt = {
 			embeds: [{
 				title: `**Game is about to start...**`,
-				description: "Game starts in 10 seconds.\nJoin game by clicking the button below.\n\nDon't worry, you can still join later by guessing",
-				footer: {text: "SongGuesser vTODO: insert version here"} // TODO
-			}], components: [{
-				components: [{
-					customId: `join_game`,
-					disabled: false,
-					emoji: { name: `🎶` },
-					label: "Tune in",
-					style: "PRIMARY",
-					type: "BUTTON"
-				}, {
-					customId: `quickstart_game`,
-					disabled: false,
-					emoji: { name: `⏩` },
-					label: "Quickstart",
-					style: "SUCCESS",
-					type: "BUTTON"
-				}, {
-					customId: `cancel_game`,
-					disabled: false,
-					label: "Cancel",
-					style: "DANGER",
-					type: "BUTTON"
-				}],
-				type: "ACTION_ROW"
-			}],
-			fetchReply: true
+				description: "Game starts in 10 seconds.\nJoin game by clicking on \"Tune in\" below.\n\nDon't worry, you can still join later by guessing",
+				footer: {text: "SongGuesser vTODO: insert version here"}, // TODO
+				fields: [{name: `Participants (${this.participantCount}/${minParticipants}):`, value: this.participantlist.join(", ")}]
+			}]
 		}
 
-		if(interaction) interaction.reply(msgopt).then(msg => game.startmsg = msg)
-		else this.channel.send(msgopt).then(msg => game.startmsg = msg)
+		this.buttonrow = new ButtonRow(msgopt, {
+			customId: `join_game`,
+			disabled: false,
+			emoji: { name: `🎶` },
+			label: "Tune in",
+			style: "PRIMARY",
+			type: "BUTTON"
+		}, {
+			customId: `quickstart_game`,
+			disabled: true,
+			emoji: { name: `⏩` },
+			label: "Quickstart",
+			style: "SUCCESS",
+			type: "BUTTON"
+		}, {
+			customId: `cancel_game`,
+			disabled: false,
+			label: "Cancel",
+			style: "DANGER",
+			type: "BUTTON"
+		})
 
-		setTimeout(() => game.quickstart(), 10000) // wait 10 secs
+		if(interaction) this.buttonrow.reply(interaction)
+		else this.buttonrow.send(this.channel)
+
+		setTimeout(() => game.quickstart(), 100000) // wait 10 secs
 	}
 
 	stop(reason, interaction, errInfo) {
@@ -90,11 +92,12 @@ export default class Game {
 
 		logger.log(`Game in #${this.channel.name} ended`)
 		this.sendEndStatus(reason, interaction, errInfo)
+		if(this.buttonrow) this.buttonrow.disableAll() // if not alr
 	}
 
 	quickstart(interaction) {
 		if([Game.RUNNING, Game.ENDED].includes(this.state)) return
-		if(this.participantCount < (config.minParticipants || 2)) {
+		if(this.participantCount < minParticipants) {
 			this.stop("toofew")
 			return
 		}
@@ -103,12 +106,8 @@ export default class Game {
 		this.sendStatus(interaction, "Game started!")
 		setRound(this)
 
-		if(this.startmsg) {
-			let msg = this.startmsg
-			let row = msg.components[0]
-			for(let c of row.components) c.setDisabled(true)
-
-			msg.edit({ components: [row] })
+		if(this.buttonrow) {
+			this.buttonrow.disableAll()
 		}
 	}
 
@@ -129,9 +128,21 @@ export default class Game {
 	}
 
 	addParticipant(user) {
-		if(!this.participants[user.id]) {
-			this.participants[user.id] = user
-			this.participantCount++
+		if(this.participants[user.id]) return
+		this.participants[user.id] = user
+		this.participantCount++
+
+		if(this.buttonrow && this.state == Game.STARTING) {
+			this.buttonrow.editOptions(msg => {
+				let embed = msg.embeds[0]
+				embed.fields = [{name: `Participants (${this.participantCount}/${minParticipants}):`, value: this.participantlist.join(", ")}]
+				return {embeds: [embed]}
+			})
+			if(this.participantCount == minParticipants) { // only execute once
+				this.buttonrow.editRow(row => {
+					row.components[1].setDisabled(false)
+				})
+			}
 		}
 	}
 
@@ -150,7 +161,7 @@ export default class Game {
 		const reasonTexts = {
 			stopped:   ":octagonal_sign: Game stopped!",
 			cancelled: ":x: Game cancelled.",
-			toofew:    `:x: Too few participants. (min: ${(config.minParticipants || 2)})`,
+			toofew:    `:x: Too few participants. (min: ${minParticipants})`,
 			error:     ":warning: An error occurred!"
 		}
 

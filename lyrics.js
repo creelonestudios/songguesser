@@ -49,11 +49,10 @@ export default class LyricsMan {
 				if(game.participants[i.user.id]) {
 					i.reply({ content: "You alr joined. The Game will start soon.", ephemeral: true })
 				} else {
-					game.participants[i.user.id] = i.user
+					game.addParticipant(i.user)
 					i.reply({ content: ":white_check_mark: You joined the game!", ephemeral: true })
 				}
 			} else if(i.customId == "quickstart_game") {
-				console.log(game.participants.length, config.minParticipants || 2)
 				if(game.participantCount < (config.minParticipants || 2)) {
 					i.reply({ content: `Can't start the game.\nThere must be at least ${config.minParticipants || 2} participants.`, ephemeral: true })
 				}
