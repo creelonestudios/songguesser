@@ -3,6 +3,7 @@ import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
+import config from "./config.json" assert {type: "json"};
 
 const logger = new Logger("Lyrics", COLOR.LIGHT_BLUE)
 
@@ -25,6 +26,40 @@ export default class LyricsMan {
 					g.guess(msg)
 					break // there can only be one game be in each channel anyways
 				}
+			}
+		})
+
+		bot.on("interactionCreate", i => {
+			if(i.type != "MESSAGE_COMPONENT") return
+			if(!i.isButton()) return
+			if(!["join_game","quickstart_game","cancel_game"].includes(i.customId)) return
+
+			let game = games[i.channel.id]
+			if(!game || game.state != Game.STARTING) {
+				i.reply({ embeds: [{
+					title: "**No game running!**",
+					description: "There is no game running in this channel",
+					color: [230, 0, 0],
+					ephemeral: true
+				}]})
+				return
+			}
+
+			if(i.customId == "join_game") {
+				if(game.participants[i.user.id]) {
+					i.reply({ content: "You alr joined. The Game will start soon.", ephemeral: true })
+				} else {
+					game.participants[i.user.id] = i.user
+					i.reply({ content: ":white_check_mark: You joined the game!", ephemeral: true })
+				}
+			} else if(i.customId == "quickstart_game") {
+				console.log(game.participants.length, config.minParticipants || 2)
+				if(game.participantCount < (config.minParticipants || 2)) {
+					i.reply({ content: `Can't start the game.\nThere must be at least ${config.minParticipants || 2} participants.`, ephemeral: true })
+				}
+				else game.quickstart(i)
+			} else if(i.customId == "cancel_game") {
+				game.stop("cancelled", i)
 			}
 		})
 

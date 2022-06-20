@@ -7,39 +7,39 @@ const logger = new Logger("Player")
 
 export default class Player {
 
-	constructor(game, voicecon, url) {
+	constructor(round, voicecon, url) {
 
 		this.stream = ytdl(url, { filter : 'audioonly', requestOptions: { maxReconnects: 10, backoff: { inc: 0, max: 0 } } })
 		this.stream.on("retry", (n, e) => {
 			logger.debug("Retry:", n, e)
 			if(e == undefined) this.player.stop()
-			else game.stop("error", null, `miniget Error: (#${n}) ${typeof e == "number" ? `HTTP status ${e}` : e.message}`)
+			else round.stop("error", null, `miniget Error: (#${n}) ${typeof e == "number" ? `HTTP status ${e}` : e.message}`)
 		})
 		this.stream.on("reconnect", (n, e) => {
 			logger.debug("Reconnect:", n, e)
 			if(n >= 10) {
 				if(e == undefined) this.player.stop()
-				else game.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
+				else round.stop("error", null, `miniget Error: (#${n}) ${e.message}`)
 			}
 		})
 		this.stream.on("close", () => {
 			logger.error("closed prematurely")
-			game.stop("error", null, `miniget Error: closed prematurely`)
+			round.stop("error", null, `miniget Error: closed prematurely`)
 		})
 		this.stream.on("finish", () => {
 			logger.debug("finished")
 		})
 		this.stream.on("timeout", (n, e) => {
 			logger.debug("timed out")
-			game.stop("error", null, `miniget Error: timed out`)
+			round.stop("error", null, `miniget Error: timed out`)
 		})
 
 		this.resource = voice.createAudioResource(this.stream, { inlineVolume: true })
 		this.player = voice.createAudioPlayer()
 		this.player.on("error", e => {
 			console.error(e)
-			//game.stop("error", null, `AudioPlayerError: ${e.message}`)
-			game.channel.send({ embeds: [{
+			//round.stop("error", null, `AudioPlayerError: ${e.message}`)
+			round.game.channel.send({ embeds: [{
 				title: ":warning: Error",
 				color: "#ff0000",
 				description: "The AudioPlayer errored. The audio might stop playing.\nI express my sincere apologies for the inconvenience. :(",

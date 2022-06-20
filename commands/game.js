@@ -55,9 +55,8 @@ export default {
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
 			const game = new Game(interaction.user, interaction.channel, interaction.member.voice.channel, 1)
-			game.start();
+			game.start(interaction);
 			games[interaction.channel.id] = game
-			game.sendStatus(interaction, "Game started!")
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]
 			if(!game) {
