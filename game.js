@@ -121,7 +121,7 @@ export default class Game {
 	}
 
 	guess(msg) {
-		addParticipant(msg.author)
+		this.addParticipant(msg.author)
 
 		if(this.round.state == Game.RUNNING)
 			this.round.guess(msg)
