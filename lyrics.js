@@ -47,7 +47,7 @@ export default class LyricsMan {
 
 			if(i.customId == "join_game") {
 				if(game.participants[i.user.id]) {
-					i.reply({ content: "You alr joined. The Game will start soon.", ephemeral: true })
+					i.reply({ content: "You have already joined. The game will start soon.", ephemeral: true })
 				} else {
 					game.addParticipant(i.user)
 					i.reply({ content: ":white_check_mark: You joined the game!", ephemeral: true })
