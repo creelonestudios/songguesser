@@ -8,6 +8,9 @@ import { COLOR } from "./logger.js"
 import points from "./points.js";
 import { db, createTables } from "./sql.js";
 
+export const VERSION = "1.0.1";
+export const BRANCH = getBranch()
+
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
 export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
 
@@ -36,6 +39,17 @@ bot.on("messageCreate", (msg) => {
 	if(msg.partial) return msg.fetch().then(handleMessage)
 	else handleMessage(msg)
 })
+
+function getBranch() {
+	// get branch name from git
+	let branch = "main"
+	try {
+		branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim()
+	} catch(e) {
+		logger.error("Couldnt get branch: " + e);
+	}
+	return branch
+}
 
 function handleMessage(msg) {
 	if(!msg.guild) {
