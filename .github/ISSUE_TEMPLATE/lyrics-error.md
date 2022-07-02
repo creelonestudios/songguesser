@@ -2,7 +2,7 @@
 name: Lyrics error
 about: Report a mistake in the lyrics we have.
 title: "[LYRICS] "
-labels: lyrics
+labels: lyrics mistake
 assignees: ''
 
 ---
