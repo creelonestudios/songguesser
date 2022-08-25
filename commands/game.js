@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { lyrics, games } from "../lyrics.js";
+import { games } from "../lyrics.js";
 import Game from "../game.js"
 
 export default {
@@ -54,11 +54,9 @@ export default {
 			}));
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
-			let i = Math.floor(Math.random() * lyrics.length)
-			const game = new Game(lyrics[i], interaction.channel, interaction.member.voice.channel)
-			game.start();
+			const game = new Game(interaction.user, interaction.channel, interaction.member.voice.channel, 1)
+			game.start(interaction);
 			games[interaction.channel.id] = game
-			game.sendStatus(interaction, "Game started!")
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]
 			if(!game) {
