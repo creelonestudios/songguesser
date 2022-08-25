@@ -23,10 +23,6 @@ bot.on("ready", async () => {
 
 	logger.log("Ready!")
 
-	/*bot.users.fetch("418109742183874560").then(u => {
-		console.log(u)
-		u.send("hi")
-	})*/
 })
 
 bot.on("messageCreate", (msg) => {
