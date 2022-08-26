@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, WebhookClient } from "discord.js";
 import config from "./config.json" assert {type: "json"};
 import { load, register } from "./commands.js"
 import statusmgr from "./statusmgr.js"
@@ -7,6 +7,37 @@ import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import points from "./points.js";
 import { db, createTables } from "./sql.js";
+
+export let errorhook = null;
+if(config.errorhook) {
+	errorhook = new WebhookClient({ url: config.errorhook });
+	
+	process.on("uncaughtException", (err, origin) => {
+		logger.error(`Uncaught exception: ${err}`)
+		errorhook.send({
+			username: "SongGuesser Error",
+			embeds: [{
+				title: "Uncaught exception",
+				description: "```" + err + "```",
+				color: [255, 0, 0],
+				timestamp: new Date()
+			}]
+		});
+	})
+	
+	process.on("unhandledRejection", (reason, listener) => {
+		logger.error(`Unhandled rejection: ${reason}`)
+		errrorhook.send({
+			username: "SongGuesser Error",
+			embeds: [{
+				title: "Unhandled rejection",
+				description: "```" + reason + "```",
+				color: [255, 0, 0],
+				timestamp: new Date()
+			}]
+		});
+	})
+}
 
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
 export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
