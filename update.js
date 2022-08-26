@@ -4,6 +4,20 @@ import config from "./config.json" assert {type: "json"};
 import { loadCommands } from "./commands.js";
 const commands = [];
 
+function removeDevs(opts) {
+	const remove = [];
+	for(const option of opts) {
+		console.log(option);
+		if(option.options) removeDevs(option.options)
+		if(option.dev) {
+			remove.push({arr: opts, opt: option});
+		}
+	}
+	for(const rm of remove) {
+		rm.arr.splice(rm.opt, 1);
+	}
+}
+
 (async () => {
 	const cmds = await loadCommands();
 
@@ -14,6 +28,9 @@ const commands = [];
 			options: command.options || []
 		};
 		if(opts.disabled) continue;
+		
+		if(!process.argv.includes("dev")) removeDevs(opts.options);
+
 		commands.push(opts);
 	}
 
