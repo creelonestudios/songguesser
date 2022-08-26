@@ -10,7 +10,7 @@ function removeDevs(opts) {
 		const option = opts[i];
 		if(option.options) removeDevs(option.options)
 		if(option.dev) {
-			remove.push({arr: opts, opt: option});
+			remove.push({arr: opts, opt: i});
 		}
 	}
 	for(const rm of remove) {
