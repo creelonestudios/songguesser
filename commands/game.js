@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { lyrics, games } from "../lyrics.js";
+import { games } from "../lyrics.js";
 import Game from "../game.js"
 
 export default {
@@ -18,7 +18,19 @@ export default {
 				{
 					type: 4,
 					name: "songid",
-					description: "Id of the song"
+					description: "Id of the song",
+					dev: true
+				},
+				{
+					type: 5,
+					name: "force",
+					description: "Play song without any players",
+					dev: true
+				},
+				{
+					type: 4,
+					name: "rounds",
+					description: "The amount of rounds to play"
 				}
 			]
 		},
@@ -54,11 +66,18 @@ export default {
 			}));
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
-			let i = Math.floor(Math.random() * lyrics.length)
-			const game = new Game(lyrics[i], interaction.channel, interaction.member.voice.channel)
-			game.start();
+			const game = new Game(interaction.user, interaction.channel, interaction.member.voice.channel, interaction.options.getInteger("rounds") || 1)
+			if(interaction.options.getInteger("songid")) {
+				console.log("Setting songid");
+				game.songid = interaction.options.getInteger("songid");
+			}
+			if(interaction.options.getBoolean("force")) {
+				game.start();
+				game.quickstart(interaction, true);
+			} else {
+				game.start(interaction);
+			}
 			games[interaction.channel.id] = game
-			game.sendStatus(interaction, "Game started!")
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]
 			if(!game) {
