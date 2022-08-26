@@ -2,7 +2,6 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import config from "./config.json" assert {type: "json"};
 import { loadCommands } from "./commands.js";
-import { writeFileSync } from "fs";
 const commands = [];
 
 function removeDevs(opts) {
@@ -34,7 +33,6 @@ function removeDevs(opts) {
 
 		commands.push(opts);
 	}
-	// writeFileSync("a", JSON.stringify(commands, null, 2));
 
 	const rest = new REST({ version: "9" }).setToken(config.token);
 
