@@ -4,6 +4,7 @@ import config from "./config.json" assert {type: "json"};
 import { loadCommands } from "./commands.js";
 const commands = [];
 
+// It works. Don't touch or it'll break permanently
 function removeDevs(opts) {
 	const remove = [];
 	for(const i in opts) {
