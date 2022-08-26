@@ -14,7 +14,7 @@ export default class ButtonRow {
 		let dis = this
 		let msgopt = new Object(this.options)
 		msgopt.components = [this.row]
-		return this.channel.send(msgopt).then(msg => dis.msg = msg)
+		return channel.send(msgopt).then(msg => dis.msg = msg)
 	}
 
 	reply(interaction) {

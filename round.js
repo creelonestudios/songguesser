@@ -17,7 +17,7 @@ export default class Round extends EventEmitter {
 	constructor(game) {
 		super()
 		this.game    = game
-		this.lyrics  = lyrics[Math.floor(Math.random() * lyrics.length)]
+		this.lyrics  = game.songid ? lyrics[game.songid] : lyrics[Math.floor(Math.random() * lyrics.length)]
 		this.state   = Game.IDLING
 		this.i       = 0
 		this.t       = -1
@@ -70,7 +70,7 @@ export default class Round extends EventEmitter {
 		this.state = Game.ENDED
 		this.sendEndStatus(reason, interaction, errInfo)
 
-		if(reason != "stopped") {
+		if (["stopped","skipped"].includes(reason)) {
 			let s = []
 			let guesserpoints = {}
 

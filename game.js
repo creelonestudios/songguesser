@@ -28,6 +28,7 @@ export default class Game {
 		this.participantCount = 1
 		this.voicecon = null
 		this.buttonrow = null
+		this.songid  = null;
 
 		this.participants[initiator.id] = initiator
 	}
@@ -95,9 +96,9 @@ export default class Game {
 		if(this.buttonrow) this.buttonrow.disableAll() // if not alr
 	}
 
-	quickstart(interaction) {
+	quickstart(interaction, force) {
 		if([Game.RUNNING, Game.ENDED].includes(this.state)) return
-		if(this.participantCount < minParticipants) {
+		if(this.participantCount < minParticipants && !force) {
 			this.stop("toofew")
 			return
 		}

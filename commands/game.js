@@ -18,7 +18,19 @@ export default {
 				{
 					type: 4,
 					name: "songid",
-					description: "Id of the song"
+					description: "Id of the song",
+					dev: true
+				},
+				{
+					type: 5,
+					name: "force",
+					description: "Play song without any players",
+					dev: true
+				},
+				{
+					type: 4,
+					name: "rounds",
+					description: "The amount of rounds to play"
 				}
 			]
 		},
@@ -54,8 +66,17 @@ export default {
 			}));
 			interaction.reply({ embeds: [embed] });
 		} else if(sub === "start") {
-			const game = new Game(interaction.user, interaction.channel, interaction.member.voice.channel, 1)
-			game.start(interaction);
+			const game = new Game(interaction.user, interaction.channel, interaction.member.voice.channel, interaction.options.getInteger("rounds") || 1)
+			if(interaction.options.getInteger("songid")) {
+				console.log("Setting songid");
+				game.songid = interaction.options.getInteger("songid");
+			}
+			if(interaction.options.getBoolean("force")) {
+				game.start();
+				game.quickstart(interaction, true);
+			} else {
+				game.start(interaction);
+			}
 			games[interaction.channel.id] = game
 		} else if(sub === "stop") {
 			const game = games[interaction.channel.id]
