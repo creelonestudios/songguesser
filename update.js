@@ -6,8 +6,8 @@ const commands = [];
 
 function removeDevs(opts) {
 	const remove = [];
-	for(const option of opts) {
-		console.log(option);
+	for(const i in opts) {
+		const option = opts[i];
 		if(option.options) removeDevs(option.options)
 		if(option.dev) {
 			remove.push({arr: opts, opt: option});
