@@ -1,7 +1,7 @@
 import ytdl from "ytdl-core"
 import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
-import { bot, BRANCH, VERSION } from "./main.js"
+import { bot, getFooter } from "./main.js"
 import points from "./points.js"
 
 const logger = new Logger("Game")
@@ -119,7 +119,7 @@ export default class Game {
 				this.channel.send({embeds: [{
 					title: "Points",
 					description: s.join("\n"),
-					footer: {text: "SongGuesser v" + VERSION + (BRANCH != "main" ? BRANCH : "")}, // TODO
+					footer: getFooter(),
 					color: "#00ff00"
 				}]})
 			}
@@ -183,7 +183,7 @@ export default class Game {
 		let msgopt = {embeds: [{
 			title: `**${title || "GUESS SONG"}**`,
 			description: this.gameInfo,
-			footer: {text: "SongGuesser v" + VERSION + (BRANCH != "main" ? BRANCH : "")} // TODO
+			footer: getFooter()
 		}]}
 
 		if(interaction) interaction.reply(msgopt)
@@ -204,7 +204,7 @@ export default class Game {
 		let msgopt = {embeds: [{
 			title: `**${reasonTexts[reason] || "Song ended"}**`,
 			description: `${this.lyrics.author} - ${this.lyrics.title}${feat}\n\nWinners:` + (guessers ? ("\n" + guessers) : " no one"),
-			footer: {text: "SongGuesser v" + VERSION + (BRANCH != "main" ? BRANCH : "")} // TODO
+			footer: getFooter()
 		}]}
 
 		if(reason == "error") {
