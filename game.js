@@ -1,9 +1,10 @@
 import * as voice from "@discordjs/voice"
 import Logger from "./logger.js"
-import { bot } from "./main.js"
+import { bot, getFooter  } from "./main.js"
 import Round from "./round.js"
 import ButtonRow from "./buttonrow.js"
 import config from "./config.json" assert {type: "json"};
+import points from "./points.js"
 
 const logger = new Logger("Game")
 
@@ -151,7 +152,7 @@ export default class Game {
 		let msgopt = {embeds: [{
 			title: `**${title || "Game Info"}**`,
 			description: this.gameInfo,
-			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
+			footer: getFooter()
 		}]}
 
 		if(interaction) interaction.reply(msgopt)
@@ -169,7 +170,7 @@ export default class Game {
 		let msgopt = {embeds: [{
 			title: `**${reasonTexts[reason] || "Game ended"}**`,
 			description: this.gameInfo,
-			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
+			footer: getFooter()
 		}]}
 
 		if(reason == "error") {
