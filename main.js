@@ -8,13 +8,13 @@ import { COLOR } from "./logger.js"
 import points from "./points.js";
 import { db, createTables } from "./sql.js";
 
-export let webhook = null;
-if(config.webhook) {
-	webhook = new WebhookClient({ url: config.webhook });
+export let errorhook = null;
+if(config.errorhook) {
+	errorhook = new WebhookClient({ url: config.errorhook });
 	
 	process.on("uncaughtException", (err, origin) => {
 		logger.error(`Uncaught exception: ${err}`)
-		webhook.send({
+		errorhook.send({
 			username: "SongGuesser Error",
 			embeds: [{
 				title: "Uncaught exception",
@@ -27,7 +27,7 @@ if(config.webhook) {
 	
 	process.on("unhandledRejection", (reason, listener) => {
 		logger.error(`Unhandled rejection: ${reason}`)
-		webhook.send({
+		errrorhook.send({
 			username: "SongGuesser Error",
 			embeds: [{
 				title: "Unhandled rejection",
