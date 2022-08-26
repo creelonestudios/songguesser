@@ -7,7 +7,31 @@ import config from "./config.json" assert {type: "json"};
 
 const logger = new Logger("Game")
 
+const SIMILAR_THRESHOLD = 70;
 const minParticipants = config.minParticipants || 2
+
+function isSimilar(a, b, threshold) {
+	if(a == b) return false;
+
+	// https://stackoverflow.com/a/67145726
+	const mutualLength = (a.length > b.length) ? b.length : a.length;
+	let matchCount = 0;
+
+	for(let pointer = 0; pointer < mutualLength; pointer++) {
+		if(a.substring(pointer, 1) === (b.substring(pointer, 1))) {
+			matchCount++;
+		}
+	}
+
+	const similarity = (matchCount * 100) / mutualLength;
+	return (similarity >= threshold);
+}
+
+function isSimilarArr(a, b, threshold) {
+	for(const str of a) {
+		if(isSimilar(str, b, threshold)) return true;
+	}
+}
 
 export default class Game {
 
@@ -128,6 +152,25 @@ export default class Game {
 			this.round.guess(msg)
 	}
 
+<<<<<<< HEAD
+			if((e == author || this.lyrics.alias.author.includes(e) || isSimilar(e, author, SIMILAR_THRESHOLD) || isSimilarArr(this.lyrics.alias.author, e, SIMILAR_THRESHOLD)) && !this.guesser.author) {
+				this.guesser.author = msg.author.id
+				guess = true
+			}
+
+			if((e == title || this.lyrics.alias.title.includes(e) || isSimilar(title, e, SIMILAR_THRESHOLD) || isSimilarArr(this.lyrics.alias.title, e, SIMILAR_THRESHOLD)) && !this.guesser.title) {
+				this.guesser.title = msg.author.id
+				guess = true
+			}
+
+			if(feats.includes(e)) {
+				let i = feats.indexOf(e)
+				if(!this.guesser.features[i]) {
+					this.guesser.features[i] = msg.author.id
+					guess = true
+					console.log(this.guesser.features)
+				}
+=======
 	addParticipant(user) {
 		if(this.participants[user.id]) return
 		this.participants[user.id] = user
@@ -143,6 +186,7 @@ export default class Game {
 				this.buttonrow.editRow(row => {
 					row.components[1].setDisabled(false)
 				})
+>>>>>>> main
 			}
 		}
 	}
