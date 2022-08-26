@@ -1,6 +1,6 @@
 import { EventEmitter } from "events"
 import Logger from "./logger.js"
-import { bot } from "./main.js"
+import { bot, getFooter } from "./main.js"
 import { lyrics } from "./lyrics.js";
 import points from "./points.js"
 import Player from "./player.js"
@@ -98,7 +98,7 @@ export default class Round extends EventEmitter {
 				this.game.channel.send({embeds: [{
 					title: "Points",
 					description: s.join("\n"),
-					footer: {text: "SongGuesser vTODO: insert version here"}, // TODO
+					footer: getFooter(),
 					color: "#00ff00"
 				}]})
 			}
@@ -154,7 +154,7 @@ export default class Round extends EventEmitter {
 		let msgopt = {embeds: [{
 			title: `**Round ${this.game.i +1}/${this.game.rounds}**`, // +1 for one-based index
 			description: this.roundInfo,
-			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
+			footer: getFooter()
 		}]}
 
 		if(interaction) interaction.reply(msgopt)
@@ -175,7 +175,7 @@ export default class Round extends EventEmitter {
 		let msgopt = {embeds: [{
 			title: `**${reasonTexts[reason] || "Song ended"}**`,
 			description: `${this.lyrics.author} - ${this.lyrics.title}${feat}\n\nWinners:` + (guessers ? ("\n" + guessers) : " no one"),
-			footer: {text: "SongGuesser vTODO: insert version here"} // TODO
+			footer: getFooter()
 		}]}
 
 		if(reason == "error") {

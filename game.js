@@ -55,7 +55,7 @@ export default class Game {
 			embeds: [{
 				title: `**Game is about to start...**`,
 				description: "Game starts in 10 seconds.\nJoin game by clicking on \"Tune in\" below.\n\nDon't worry, you can still join later by guessing",
-				footer: {text: "SongGuesser vTODO: insert version here"}, // TODO
+				footer: getFooter(),
 				fields: [{name: `Participants (${this.participantCount}/${minParticipants}):`, value: this.participantlist.join(", ")}]
 			}]
 		}
@@ -213,7 +213,7 @@ function setRound(game) {
 			game.channel.send({embeds: [{
 				title: `**Game Info**`,
 				description: "Next round starts in 3 seconds...",
-				footer: {text: "SongGuesser vTODO: insert version here"} // TODO
+				footer: getFooter()
 			}]})
 			return
 		}
