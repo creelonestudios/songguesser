@@ -1,9 +1,10 @@
-import fs from "fs/promises"
+import { readFile } from "fs/promises"
 import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
-import config from "./config.json" assert {type: "json"}
+
+export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
 const lyricslib = await import(config.lyrics + "main.mjs")
 
@@ -40,7 +41,6 @@ export default class LyricsMan {
 		})
 
 		bot.on("interactionCreate", i => {
-			if(i.type != "MESSAGE_COMPONENT") return
 			if(!i.isButton()) return
 			if(!["join_game","quickstart_game","cancel_game"].includes(i.customId)) return
 

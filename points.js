@@ -8,15 +8,15 @@ class Points {
 
 		this.points = new Map() // userid -> points
 		this.guildpoints = new Map() // guildid -> (userid -> points)
-		db.query("SELECT * FROM users").then(rows => {
-			for(const row of rows[0]) {
-				if(!this.points.has(row.id)) this.points.set(row.id + "", row.points);
-				else this.points.set(row.id, this.points.get(row.id + "") + row.points)
-				const guild = this.guildpoints.get(row.guild) || new Map()
-				guild.set(row.id, row.points)
-				this.guildpoints.set(row.guild, guild)
-			}
-		});
+		// db.query("SELECT * FROM users").then(rows => {
+		// 	for(const row of rows[0]) {
+		// 		if(!this.points.has(row.id)) this.points.set(row.id + "", row.points);
+		// 		else this.points.set(row.id, this.points.get(row.id + "") + row.points)
+		// 		const guild = this.guildpoints.get(row.guild) || new Map()
+		// 		guild.set(row.id, row.points)
+		// 		this.guildpoints.set(row.guild, guild)
+		// 	}
+		// });
 
 	}
 

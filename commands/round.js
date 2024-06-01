@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { games } from "../lyrics.js";
 import Game from "../game.js"
 
