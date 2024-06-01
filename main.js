@@ -43,7 +43,7 @@ if(config.errorhook) {
 }
 
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
-export const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.DirectMessages], partials: [Partials.Channel] });
+export const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent], partials: [Partials.Channel] });
 
 export const VERSION = await getVersion()
 export const BRANCH = getBranch()
