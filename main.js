@@ -6,7 +6,7 @@ import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import points from "./points.js";
 import { db, createTables } from "./sql.js";
-import fs, { readFile } from "fs/promises"
+import { readFile } from "fs/promises"
 import { execSync } from "child_process"
 
 export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
@@ -71,7 +71,7 @@ bot.on("messageCreate", (msg) => {
 })
 
 async function getVersion() {
-	let data = await fs.readFile("./package.json", { encoding: "utf-8" })
+	let data = await readFile("./package.json", { encoding: "utf-8" })
 	try {
 		data = JSON.parse(data)
 	} catch (e) {
