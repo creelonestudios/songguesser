@@ -8,6 +8,7 @@ import points from "./points.js";
 import { db, createTables } from "./sql.js";
 import { readFile } from "fs/promises"
 import { execSync } from "child_process"
+import { YtDlp } from "@yemreak/yt-dlp"
 
 export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
@@ -47,6 +48,14 @@ export const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayInten
 
 export const VERSION = await getVersion()
 export const BRANCH = getBranch()
+
+const ytdlpConfig = { workdir: "./downloads" }
+export const ytDlp = new YtDlp(ytdlpConfig)
+
+// install ytdlp from pip
+await ytDlp.downloadLatestReleaseIfNotExists()
+
+await LyricsMan.init()
 
 bot.on("ready", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);

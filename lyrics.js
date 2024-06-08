@@ -1,8 +1,8 @@
 import { readFile } from "fs/promises"
-import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
+import { ytDlp } from "./main.js"
 
 export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
@@ -24,6 +24,34 @@ export const games  = {}
 let bot
 
 export default class LyricsMan {
+
+	static async init() {
+		// fetch song lengths
+		const a = []
+		const promises = []
+
+		for (let l of lyrics) {
+			let id = l.id
+			a.push(id)
+			if(l.options.length) continue
+	
+			promises.push(ytDlp.retrieveMediaInfoList(l.url))
+		}
+
+		let mediaInfos
+		try {
+			mediaInfos = await Promise.all(promises)
+		} catch (e) {
+			logger.error(`fetch length error ${id}:`, e)
+		}
+
+		for (let i in mediaInfos) {
+			const info = mediaInfos[i][0]
+			lyrics[i].length = info.duration
+		}
+	
+		logger.log(`Loaded lyrics: ${a.join(", ")}`)
+	}
 
 	constructor(_bot) {
 		bot = _bot
@@ -84,19 +112,3 @@ export default class LyricsMan {
 	}
 
 }
-
-// fetch song lengths
-let a = []
-for (let l of lyrics) {
-	let id = l.id
-	a.push(id)
-	if(l.options.length) continue
-	ytdl.getBasicInfo(l.url).then(info => {
-		l.length = parseInt(info.videoDetails.lengthSeconds)
-	}).catch(e => {
-		logger.error(`fetch length error ${id}:`, e)
-	})
-}
-
-logger.log(`Loaded lyrics: ${a.join(", ")}`)
-//console.log(lyrics)

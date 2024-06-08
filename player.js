@@ -1,15 +1,9 @@
-import { YtDlp } from "@yemreak/yt-dlp"
 import * as voice from "@discordjs/voice"
 
 import Logger from "./logger.js"
+import { ytDlp } from "./main.js"
 
 const logger = new Logger("Player")
-
-const config = { workdir: "./downloads" }
-const ytDlp = new YtDlp(config)
-
-// install ytdlp from pip
-await ytDlp.downloadLatestReleaseIfNotExists()
 
 export default class Player {
 
