@@ -35,7 +35,9 @@ export function register(bot) {
 				await bot.commands[interaction.commandName].run(bot, interaction);
 			} catch (error) {
 				logger.error(error);
-				interaction.reply({ content: ":woozy_face: There was an error executing that command.", ephemeral: true });
+				if (interaction.isRepliable()) {
+					interaction.reply({ content: ":woozy_face: There was an error executing that command.", ephemeral: true });
+				}
 			}
 		} else {
 			logger.error("Unknown command received: " + interaction.commandName);

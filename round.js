@@ -103,7 +103,7 @@ export default class Round extends EventEmitter {
 					color: "#00ff00"
 				}]})
 			}
-    }
+		}
 
 		if(this.player) {
 			this.player.fadeOut()
