@@ -38,12 +38,12 @@ export default class Round extends EventEmitter {
 
 		if(this.voicecon && this.lyrics.url) {
 			this.player = new Player(this, this.voicecon, this.lyrics.url)
-			console.log("downloading song...")
+			logger.debug("downloading song...")
 			await this.player.play()
 		}
 
 		// start
-		console.log("starting game...")
+		logger.debug("starting game...")
 		this.t = Date.now()
 		this.state = Game.RUNNING
 	}
