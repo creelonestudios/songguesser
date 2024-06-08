@@ -56,7 +56,7 @@ export default {
 			const embed = new EmbedBuilder();
 			embed.setTitle("Songs (" + lyrics.length + ")");
 			embed.setFooter("SongGuesser");
-			embed.setColor([0, 230, 0]);
+			embed.setColor(0x00E600);
 			embed.addFields(lyrics.map(l => {
 				return {
 					name: `${l.title}`,
@@ -84,7 +84,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}
@@ -95,7 +95,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}

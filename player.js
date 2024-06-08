@@ -41,7 +41,7 @@ export default class Player {
 			//round.stop("error", null, `AudioPlayerError: ${e.message}`)
 			round.game.channel.send({ embeds: [{
 				title: ":warning: Error",
-				color: "#ff0000",
+				color: 0xff0000,
 				description: "The AudioPlayer errored. The audio might stop playing.\nI express my sincere apologies for the inconvenience. :(",
 				fields: (e && e.message) ? [{name: "AudioPlayerError", value: e.message}] : []
 			}]})

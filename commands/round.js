@@ -28,7 +28,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}
@@ -39,7 +39,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}
