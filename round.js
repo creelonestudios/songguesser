@@ -32,20 +32,20 @@ export default class Round extends EventEmitter {
 		this.start()
 	}
 
-	start() {
+	async start() {
 		this.state = Game.STARTING
 		logger.debug(`Song: ${this.lyrics.author} - ${this.lyrics.title}`)
 
 		if(this.voicecon && this.lyrics.url) {
 			this.player = new Player(this, this.voicecon, this.lyrics.url)
-			this.player.stream.on("response", res => { // delayed start
-				this.t = Date.now() + bot.ws.ping
-				this.state = Game.RUNNING
-			})
-		} else { // immediate start
-			this.t = Date.now()
-			this.state = Game.RUNNING
+			console.log("downloading song...")
+			await this.player.play()
 		}
+
+		// start
+		console.log("starting game...")
+		this.t = Date.now()
+		this.state = Game.RUNNING
 	}
 
 	sendLyrics() {
