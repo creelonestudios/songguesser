@@ -8,7 +8,7 @@ export default {
 		interaction.reply({ embeds: [{
 			title: "**I am responsive!**",
 			description: `:ping_pong: Pong! (${bot.ws.ping}ms)`,
-			color: [0, 230, 0]
+			color: 0x00E600
 		}], ping: bot.ws.ping });
 	}
 }

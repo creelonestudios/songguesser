@@ -1,9 +1,10 @@
-import fs from "fs/promises"
-import ytdl from "ytdl-core"
+import { readFile } from "fs/promises"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
-import config from "./config.json" assert {type: "json"}
+import { ytDlp } from "./main.js"
+
+export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
 const lyricslib = await import(config.lyrics + "main.mjs")
 
@@ -24,6 +25,34 @@ let bot
 
 export default class LyricsMan {
 
+	static async init() {
+		// fetch song lengths
+		const a = []
+		const promises = []
+
+		for (let l of lyrics) {
+			let id = l.id
+			a.push(id)
+			if(l.options.length) continue
+	
+			promises.push(ytDlp.retrieveMediaInfoList(l.url))
+		}
+
+		let mediaInfos
+		try {
+			mediaInfos = await Promise.all(promises)
+		} catch (e) {
+			logger.error(`fetch length error ${id}:`, e)
+		}
+
+		for (let i in mediaInfos) {
+			const info = mediaInfos[i][0]
+			lyrics[i].length = info.duration
+		}
+	
+		logger.log(`Loaded lyrics: ${a.join(", ")}`)
+	}
+
 	constructor(_bot) {
 		bot = _bot
 
@@ -40,7 +69,6 @@ export default class LyricsMan {
 		})
 
 		bot.on("interactionCreate", i => {
-			if(i.type != "MESSAGE_COMPONENT") return
 			if(!i.isButton()) return
 			if(!["join_game","quickstart_game","cancel_game"].includes(i.customId)) return
 
@@ -49,7 +77,7 @@ export default class LyricsMan {
 				i.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0],
+					color: 0xE60000,
 					ephemeral: true
 				}]})
 				return
@@ -84,19 +112,3 @@ export default class LyricsMan {
 	}
 
 }
-
-// fetch song lengths
-let a = []
-for (let l of lyrics) {
-	let id = l.id
-	a.push(id)
-	if(l.options.length) continue
-	ytdl.getBasicInfo(l.url).then(info => {
-		l.length = parseInt(info.videoDetails.lengthSeconds)
-	}).catch(e => {
-		logger.error(`fetch length error ${id}:`, e)
-	})
-}
-
-logger.log(`Loaded lyrics: ${a.join(", ")}`)
-//console.log(lyrics)

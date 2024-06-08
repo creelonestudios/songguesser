@@ -5,6 +5,7 @@ import { lyrics } from "./lyrics.js";
 import points from "./points.js"
 import Player from "./player.js"
 import Game from "./game.js"
+import { MessageFlags } from "discord.js";
 
 const logger = new Logger("Round")
 
@@ -31,20 +32,20 @@ export default class Round extends EventEmitter {
 		this.start()
 	}
 
-	start() {
+	async start() {
 		this.state = Game.STARTING
 		logger.debug(`Song: ${this.lyrics.author} - ${this.lyrics.title}`)
 
 		if(this.voicecon && this.lyrics.url) {
 			this.player = new Player(this, this.voicecon, this.lyrics.url)
-			this.player.stream.on("response", res => { // delayed start
-				this.t = Date.now() + bot.ws.ping
-				this.state = Game.RUNNING
-			})
-		} else { // immediate start
-			this.t = Date.now()
-			this.state = Game.RUNNING
+			logger.debug("downloading song...")
+			await this.player.play()
 		}
+
+		// start
+		logger.debug("starting game...")
+		this.t = Date.now()
+		this.state = Game.RUNNING
 	}
 
 	sendLyrics() {
@@ -53,7 +54,7 @@ export default class Round extends EventEmitter {
 		if(line) {
 			if(Date.now() - this.t < line.t) return
 			//logger.debug(Math.floor((Date.now() - this.t) * 10) / 10, this.lyrics.length, this.lyrics.lines[this.i])
-			this.game.channel.send(line.s)
+			this.game.channel.send({ content: line.s, flags: [MessageFlags.SuppressNotifications] })
 		}
 		this.i++
 
@@ -102,7 +103,7 @@ export default class Round extends EventEmitter {
 					color: "#00ff00"
 				}]})
 			}
-    }
+		}
 
 		if(this.player) {
 			this.player.fadeOut()

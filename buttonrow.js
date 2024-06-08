@@ -1,10 +1,10 @@
-import { MessageActionRow } from "discord.js"
+import { ActionRowBuilder, ButtonBuilder } from "discord.js"
 
 export default class ButtonRow {
 
 	constructor(options, ...buttons) {
 		this.options = options
-		this.row = new MessageActionRow()
+		this.row = new ActionRowBuilder()
 			.addComponents(buttons)
 		this.msg = null
 		this.disabled = false
@@ -40,7 +40,9 @@ export default class ButtonRow {
 	editRow(cb) {
 		if(!cb || this.disabled) return
 		this.editOptions(msg => {
-			let row = msg.components[0]
+			console.log(msg.components[0]);
+			let row = msg.components[0];
+			row.components = row.components.map(component => ButtonBuilder.from(component))
 			cb(row)
 			return { components: [row] }
 		})

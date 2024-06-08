@@ -1,5 +1,4 @@
-import { Client, WebhookClient } from "discord.js";
-import config from "./config.json" assert {type: "json"};
+import { Client, GatewayIntentBits, Partials, WebhookClient } from "discord.js";
 import { load, register } from "./commands.js"
 import statusmgr from "./statusmgr.js"
 import LyricsMan from "./lyrics.js"
@@ -7,8 +6,11 @@ import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import points from "./points.js";
 import { db, createTables } from "./sql.js";
-import fs from "fs/promises"
+import { readFile } from "fs/promises"
 import { execSync } from "child_process"
+import { YtDlp } from "@yemreak/yt-dlp"
+
+export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
 export let errorhook = null;
 if(config.errorhook) {
@@ -42,10 +44,18 @@ if(config.errorhook) {
 }
 
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
-export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
+export const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent], partials: [Partials.Channel] });
 
 export const VERSION = await getVersion()
 export const BRANCH = getBranch()
+
+const ytdlpConfig = { workdir: "./downloads" }
+export const ytDlp = new YtDlp(ytdlpConfig)
+
+// install ytdlp from pip
+await ytDlp.downloadLatestReleaseIfNotExists()
+
+await LyricsMan.init()
 
 bot.on("ready", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);
@@ -70,7 +80,7 @@ bot.on("messageCreate", (msg) => {
 })
 
 async function getVersion() {
-	let data = await fs.readFile("./package.json", { encoding: "utf-8" })
+	let data = await readFile("./package.json", { encoding: "utf-8" })
 	try {
 		data = JSON.parse(data)
 	} catch (e) {

@@ -3,8 +3,11 @@ import Logger from "./logger.js"
 import { bot, getFooter  } from "./main.js"
 import Round from "./round.js"
 import ButtonRow from "./buttonrow.js"
-import config from "./config.json" assert {type: "json"};
 import points from "./points.js"
+import { ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { readFile } from "fs/promises"
+
+export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
 
 const logger = new Logger("Game")
 
@@ -60,27 +63,24 @@ export default class Game {
 			}]
 		}
 
-		this.buttonrow = new ButtonRow(msgopt, {
-			customId: `join_game`,
-			disabled: false,
-			emoji: { name: `🎶` },
-			label: "Tune in",
-			style: "PRIMARY",
-			type: "BUTTON"
-		}, {
-			customId: `quickstart_game`,
-			disabled: true,
-			emoji: { name: `⏩` },
-			label: "Quickstart",
-			style: "SUCCESS",
-			type: "BUTTON"
-		}, {
-			customId: `cancel_game`,
-			disabled: false,
-			label: "Cancel",
-			style: "DANGER",
-			type: "BUTTON"
-		})
+		this.buttonrow = new ButtonRow(msgopt, new ButtonBuilder()
+			.setCustomId("join_game")
+			.setDisabled(false)
+			.setEmoji("🎶")
+			.setLabel("Tune in")
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
+			.setCustomId("quickstart_game")
+			.setDisabled(true)
+			.setEmoji("⏩")
+			.setLabel("Quickstart")
+			.setStyle(ButtonStyle.Success),
+		new ButtonBuilder()
+			.setCustomId("cancel_game")
+			.setDisabled(false)
+			.setLabel("Cancel")
+			.setStyle(ButtonStyle.Danger)
+		)
 
 		if(interaction) this.buttonrow.reply(interaction)
 		else this.buttonrow.send(this.channel)
@@ -136,7 +136,7 @@ export default class Game {
 
 		if(this.buttonrow && this.state == Game.STARTING) {
 			this.buttonrow.editOptions(msg => {
-				let embed = msg.embeds[0]
+				let embed = EmbedBuilder.from(msg.embeds[0])
 				embed.fields = [{name: `Participants (${this.participantCount}/${minParticipants}):`, value: this.participantlist.join(", ")}]
 				return {embeds: [embed]}
 			})

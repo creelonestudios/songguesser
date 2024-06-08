@@ -1,7 +1,11 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
-import config from "./config.json" assert {type: "json"};
+import {} from "./main.js"
 import { loadCommands } from "./commands.js";
+import { readFile } from "fs/promises"
+
+export const config = await readFile("./config.json", { encoding: "utf-8" }).then(JSON.parse);
+
 const commands = [];
 
 function removeDevs(opts) {

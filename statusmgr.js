@@ -1,8 +1,10 @@
 import { bot } from "./main.js"
-import activities from "./status.json" assert {type: "json"}
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import { lyrics } from "./lyrics.js"
+import { readFile } from "fs/promises";
+
+export const activities = await readFile("./status.json", { encoding: "utf-8" }).then(JSON.parse);
 
 const logger = new Logger("StatusMgr", COLOR.LIGHT_YELLOW)
 
