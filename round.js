@@ -5,6 +5,7 @@ import { lyrics } from "./lyrics.js";
 import points from "./points.js"
 import Player from "./player.js"
 import Game from "./game.js"
+import { MessageFlags } from "discord.js";
 
 const logger = new Logger("Round")
 
@@ -53,7 +54,7 @@ export default class Round extends EventEmitter {
 		if(line) {
 			if(Date.now() - this.t < line.t) return
 			//logger.debug(Math.floor((Date.now() - this.t) * 10) / 10, this.lyrics.length, this.lyrics.lines[this.i])
-			this.game.channel.send(line.s)
+			this.game.channel.send({ content: line.s, flags: [MessageFlags.SuppressNotifications] })
 		}
 		this.i++
 
