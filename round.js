@@ -99,7 +99,7 @@ export default class Round extends EventEmitter {
 					title: "Points",
 					description: s.join("\n"),
 					footer: getFooter(),
-					color: "#00ff00"
+					color: 0x00ff00
 				}]})
 			}
     }
@@ -180,7 +180,7 @@ export default class Round extends EventEmitter {
 
 		if(reason == "error") {
 			if(errInfo) msgopt.fields = [{name: "error", value: errInfo}]
-			msgopt.color = "#ff0000"
+			msgopt.color = 0xff0000
 		}
 
 		if(interaction) interaction.reply(msgopt)

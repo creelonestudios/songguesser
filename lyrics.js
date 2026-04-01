@@ -3,7 +3,7 @@ import ytdl from "ytdl-core"
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import Game from "./game.js"
-import config from "./config.json" assert {type: "json"}
+import config from "./config.json" with {type: "json"}
 
 const lyricslib = await import(config.lyrics + "main.mjs")
 
@@ -49,7 +49,7 @@ export default class LyricsMan {
 				i.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0],
+					color: 0xE60000,
 					ephemeral: true
 				}]})
 				return

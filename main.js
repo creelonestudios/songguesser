@@ -1,5 +1,5 @@
 import { Client, WebhookClient } from "discord.js";
-import config from "./config.json" assert {type: "json"};
+import config from "./config.json" with {type: "json"};
 import { load, register } from "./commands.js"
 import statusmgr from "./statusmgr.js"
 import LyricsMan from "./lyrics.js"
@@ -21,7 +21,7 @@ if(config.errorhook) {
 			embeds: [{
 				title: "Uncaught exception",
 				description: "```" + err + "```",
-				color: [255, 0, 0],
+				color: 0xff0000,
 				timestamp: new Date()
 			}]
 		});
@@ -34,7 +34,7 @@ if(config.errorhook) {
 			embeds: [{
 				title: "Unhandled rejection",
 				description: "```" + reason + "```",
-				color: [255, 0, 0],
+				color: 0xff0000,
 				timestamp: new Date()
 			}]
 		});
@@ -42,12 +42,12 @@ if(config.errorhook) {
 }
 
 const logger = new Logger("Discord Bot", "38;2;255;0;255;3")
-export const bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "DIRECT_MESSAGES"], partials: ["CHANNEL"] });
+export const bot = new Client({ intents: ["Guilds", "GuildMessages", "GuildVoiceStates", "DirectMessages"], partials: ["CHANNEL"] });
 
 export const VERSION = await getVersion()
 export const BRANCH = getBranch()
 
-bot.on("ready", async () => {
+bot.on("clientReady", async () => {
 	logger.log(`Logged in as ${bot.user.tag}!`);
 
 	statusmgr()

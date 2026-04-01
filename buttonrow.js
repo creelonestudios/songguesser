@@ -1,11 +1,12 @@
-import { MessageActionRow } from "discord.js"
+import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders"
 
 export default class ButtonRow {
 
 	constructor(options, ...buttons) {
+		buttons = buttons.map(button => new ButtonBuilder(button))
+
 		this.options = options
-		this.row = new MessageActionRow()
-			.addComponents(buttons)
+		this.row = new ActionRowBuilder().addComponents(...buttons)
 		this.msg = null
 		this.disabled = false
 	}
