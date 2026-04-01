@@ -3,8 +3,9 @@ import Logger from "./logger.js"
 import { bot, getFooter  } from "./main.js"
 import Round from "./round.js"
 import ButtonRow from "./buttonrow.js"
-import config from "./config.json" assert {type: "json"};
+import config from "./config.json" with {type: "json"};
 import points from "./points.js"
+import { ButtonStyle } from "discord-api-types/v10"
 
 const logger = new Logger("Game")
 
@@ -61,25 +62,22 @@ export default class Game {
 		}
 
 		this.buttonrow = new ButtonRow(msgopt, {
-			customId: `join_game`,
+			custom_id: `join_game`,
 			disabled: false,
 			emoji: { name: `🎶` },
 			label: "Tune in",
-			style: "PRIMARY",
-			type: "BUTTON"
+			style: ButtonStyle.Primary
 		}, {
-			customId: `quickstart_game`,
+			custom_id: `quickstart_game`,
 			disabled: true,
 			emoji: { name: `⏩` },
 			label: "Quickstart",
-			style: "SUCCESS",
-			type: "BUTTON"
+			style: ButtonStyle.Success
 		}, {
-			customId: `cancel_game`,
+			custom_id: `cancel_game`,
 			disabled: false,
 			label: "Cancel",
-			style: "DANGER",
-			type: "BUTTON"
+			style: ButtonStyle.Danger
 		})
 
 		if(interaction) this.buttonrow.reply(interaction)
@@ -175,7 +173,7 @@ export default class Game {
 
 		if(reason == "error") {
 			if(errInfo) msgopt.fields = [{name: "error", value: errInfo}]
-			msgopt.color = "#ff0000"
+			msgopt.color = 0xff0000
 		}
 
 		if(interaction) interaction.reply(msgopt)

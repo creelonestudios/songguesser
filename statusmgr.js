@@ -1,5 +1,5 @@
 import { bot } from "./main.js"
-import activities from "./status.json" assert {type: "json"}
+import activities from "./status.json" with {type: "json"}
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import { lyrics } from "./lyrics.js"

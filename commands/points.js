@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import points from "../points.js";
 
 export default {
@@ -44,9 +44,9 @@ export default {
 			const user = interaction.options.getUser("user") || interaction.user;
 			const point = points.getPoints(user.id, interaction.guild.id);
 			console.log(point);
-			const embed = new MessageEmbed();
+			const embed = new EmbedBuilder();
 			embed.setTitle(`${user.username}'s points`);
-			embed.setFooter("SongGuesser");
+			embed.setFooter({ text: "SongGuesser" });
 			embed.setColor("YELLOW");
 			embed.addField("Global", point.global + " points", true);
 			embed.addField("Guild", point.guildpoints + " points", true);
@@ -60,8 +60,8 @@ export default {
 			const top = global ? points.getTopList() : points.getTopList(interaction.guild.id);
 			const embed = new MessageEmbed();
 			embed.setTitle("Top list for " + (global ? "all guilds" : interaction.guild.name));
-			embed.setFooter("SongGuesser");
-			embed.setColor("#3cbd9b");
+			embed.setFooter({ text: "SongGuesser" });
+			embed.setColor(0x3cbd9b);
 			embed.addFields(top.map(u => {
 				const id = u[0];
 				const point = u[1];

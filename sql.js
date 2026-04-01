@@ -1,7 +1,7 @@
 import Logger from "./logger.js"
 import { COLOR } from "./logger.js"
 import mysql from "mysql2/promise";
-import config from "./config.json" assert {type: "json"};
+import config from "./config.json" with {type: "json"};
 
 const logger = new Logger("MySQL", COLOR.DARK_AQUA)
 logger.log("Starting MySQL")

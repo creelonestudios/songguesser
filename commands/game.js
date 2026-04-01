@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { games } from "../lyrics.js";
 import Game from "../game.js"
 
@@ -53,10 +53,10 @@ export default {
 	run: async (bot, interaction) => {
 		const sub = interaction.options.getSubcommand();
 		if(sub === "list") {
-			const embed = new MessageEmbed();
+			const embed = new EmbedBuilder();
 			embed.setTitle("Songs (" + lyrics.length + ")");
-			embed.setFooter("SongGuesser");
-			embed.setColor([0, 230, 0]);
+			embed.setFooter({ text: "SongGuesser" });
+			embed.setColor(0xE60000);
 			embed.addFields(lyrics.map(l => {
 				return {
 					name: `${l.title}`,
@@ -84,7 +84,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}
@@ -95,7 +95,7 @@ export default {
 				interaction.reply({ embeds: [{
 					title: "**No game running!**",
 					description: "There is no game running in this channel",
-					color: [230, 0, 0]
+					color: 0xE60000
 				}]})
 				return;
 			}
